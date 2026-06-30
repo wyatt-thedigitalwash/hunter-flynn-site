@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { COUNTRIES } from "@/lib/countries";
 
-type FormStatus = "idle" | "loading" | "success" | "already_subscribed" | "error";
+type FormStatus = "idle" | "loading" | "success" | "error";
 
 export default function SubscribeForm() {
   const [email, setEmail] = useState("");
@@ -33,12 +33,7 @@ export default function SubscribeForm() {
         return;
       }
 
-      const data = await res.json();
-      if (res.status === 409 && data.error === "already_subscribed") {
-        setStatus("already_subscribed");
-      } else {
-        setStatus("error");
-      }
+      setStatus("error");
     } catch {
       setStatus("error");
     }
@@ -48,14 +43,6 @@ export default function SubscribeForm() {
     return (
       <p className="font-adobe text-white/70 text-center py-4 w-full">
         You&apos;re in. Thanks for subscribing.
-      </p>
-    );
-  }
-
-  if (status === "already_subscribed") {
-    return (
-      <p className="font-adobe text-white/70 text-center py-4 w-full">
-        You&apos;re already on the list.
       </p>
     );
   }

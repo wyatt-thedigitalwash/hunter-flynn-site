@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 
 // In-memory rate limiting: IP -> { count, resetAt }
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -25,11 +26,7 @@ function isRateLimited(ip: string): boolean {
   }
 
   entry.count++;
-  if (entry.count > RATE_LIMIT_MAX) {
-    return true;
-  }
-
-  return false;
+  return entry.count > RATE_LIMIT_MAX;
 }
 
 function sanitize(value: unknown, maxLength: number): string {
@@ -51,42 +48,86 @@ async function subscribeToMailchimp(
     throw new Error("Mailchimp environment variables not configured");
   }
 
-  const auth = Buffer.from(`anystring:${apiKey}`).toString("base64");
+  const auth = `Basic ${Buffer.from(`anystring:${apiKey}`).toString("base64")}`;
+  const subscriberHash = crypto.createHash("md5").update(email).digest("hex");
+  const mcUrl = `https://${server}.api.mailchimp.com/3.0/lists/${audienceId}/members/${subscriberHash}`;
 
-  const res = await fetch(
-    `https://${server}.api.mailchimp.com/3.0/lists/${audienceId}/members`,
+  const mergeFields: Record<string, string> = {
+    MMERGE9: "hunterflynn.com",
+  };
+  if (phone) mergeFields.PHONE = phone;
+  if (country) mergeFields.MMERGE12 = country;
+  if (zipCode) mergeFields.MMERGE14 = zipCode;
+
+  let mailchimpOk = false;
+
+  const res = await fetch(mcUrl, {
+    method: "PUT",
+    headers: {
+      Authorization: auth,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email_address: email,
+      status_if_new: "subscribed",
+      merge_fields: mergeFields,
+    }),
+  });
+
+  if (res.ok) {
+    mailchimpOk = true;
+  } else {
+    const data = await res.json().catch(() => null);
+    console.error("[Mailchimp] Status:", res.status, "Body:", JSON.stringify(data));
+
+    // If merge fields caused the error, retry with email only
+    if (data?.detail?.includes("merge")) {
+      const retry = await fetch(mcUrl, {
+        method: "PUT",
+        headers: {
+          Authorization: auth,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email_address: email,
+          status_if_new: "subscribed",
+        }),
+      });
+      if (retry.ok) {
+        mailchimpOk = true;
+      } else {
+        const retryBody = await retry.json().catch(() => null);
+        console.error("[Mailchimp] Retry status:", retry.status, "Body:", JSON.stringify(retryBody));
+      }
+    }
+  }
+
+  if (!mailchimpOk) {
+    throw new Error("Mailchimp subscription failed");
+  }
+
+  // Add the "Hunter Flynn" tag separately (PUT/upsert doesn't support tags)
+  const tagRes = await fetch(
+    `${mcUrl}/tags`,
     {
       method: "POST",
       headers: {
-        Authorization: `Basic ${auth}`,
+        Authorization: auth,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email_address: email,
-        status: "subscribed",
-        tags: ["Hunter Flynn"],
-        merge_fields: {
-          MMERGE14: zipCode,
-          PHONE: phone,
-          MMERGE12: country,
-          MMERGE9: "hunterflynn.com",
-        },
+        tags: [{ name: "Hunter Flynn", status: "active" }],
       }),
     }
   );
 
-  if (!res.ok) {
-    const data = await res.json();
-    if (res.status === 400 && data.title === "Member Exists") {
-      return { alreadyExists: true };
-    }
-    throw new Error(`Mailchimp error: ${data.title || res.statusText}`);
+  if (!tagRes.ok) {
+    const tagData = await tagRes.json().catch(() => null);
+    console.error("[Mailchimp] Tag error:", JSON.stringify(tagData));
   }
-
-  return { alreadyExists: false };
 }
 
-async function subscribeToLaylo(email: string, phone: string) {
+function subscribeToLaylo(email: string, phone: string) {
   const apiKey = process.env.LAYLO_API_KEY;
   if (!apiKey) return;
 
@@ -94,39 +135,33 @@ async function subscribeToLaylo(email: string, phone: string) {
     Authorization: `Bearer ${apiKey}`,
     "Content-Type": "application/json",
   };
+  const layloUrl = "https://laylo.com/api/graphql";
 
-  // Subscribe by email
-  try {
-    await fetch("https://laylo.com/api/graphql", {
+  // Subscribe by email (fire-and-forget)
+  fetch(layloUrl, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      query: `mutation($email: String) { subscribeToUser(email: $email, acquisitionChannel: "hunterflynn.com") }`,
+      variables: { email },
+    }),
+  }).catch(() => {});
+
+  // Subscribe by phone if provided (fire-and-forget)
+  if (phone) {
+    const digits = phone.replace(/\D/g, "");
+    const formatted = digits.startsWith("1")
+      ? `+${digits}`
+      : `+1${digits}`;
+
+    fetch(layloUrl, {
       method: "POST",
       headers,
       body: JSON.stringify({
-        query: `mutation { subscribeToUser(email: "${email}", acquisitionChannel: "hunterflynn.com") }`,
+        query: `mutation($phoneNumber: String) { subscribeToUser(phoneNumber: $phoneNumber, acquisitionChannel: "hunterflynn.com") }`,
+        variables: { phoneNumber: formatted },
       }),
-    });
-  } catch (err) {
-    console.error("Laylo email subscription failed:", err);
-  }
-
-  // Subscribe by phone if provided
-  if (phone) {
-    try {
-      let digits = phone.replace(/\D/g, "");
-      if (digits && !digits.startsWith("1")) {
-        digits = "1" + digits;
-      }
-      const phoneNumber = "+" + digits;
-
-      await fetch("https://laylo.com/api/graphql", {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          query: `mutation { subscribeToUser(phoneNumber: "${phoneNumber}", acquisitionChannel: "hunterflynn.com") }`,
-        }),
-      });
-    } catch (err) {
-      console.error("Laylo phone subscription failed:", err);
-    }
+    }).catch(() => {});
   }
 }
 
@@ -154,33 +189,33 @@ export async function POST(req: NextRequest) {
     const zipCode = sanitize(body.zipCode, 20);
     const country = sanitize(body.country, 100);
 
-    // Validate email
+    // Validate
     if (!email || !EMAIL_REGEX.test(email)) {
       return NextResponse.json(
-        { error: "A valid email address is required" },
+        { error: "A valid email address is required." },
         { status: 400 }
       );
     }
 
-    // Mailchimp
-    const { alreadyExists } = await subscribeToMailchimp(
-      email,
-      phone,
-      zipCode,
-      country
-    );
-
-    if (alreadyExists) {
+    if (!zipCode) {
       return NextResponse.json(
-        { error: "already_subscribed" },
-        { status: 409 }
+        { error: "A valid zip code is required." },
+        { status: 400 }
       );
     }
 
+    if (!country) {
+      return NextResponse.json(
+        { error: "A valid country is required." },
+        { status: 400 }
+      );
+    }
+
+    // Mailchimp (primary, gating call)
+    await subscribeToMailchimp(email, phone, zipCode, country);
+
     // Laylo (secondary, fire-and-forget)
-    subscribeToLaylo(email, phone).catch((err) => {
-      console.error("Laylo subscription error:", err);
-    });
+    subscribeToLaylo(email, phone);
 
     return NextResponse.json({ success: true });
   } catch (err) {
