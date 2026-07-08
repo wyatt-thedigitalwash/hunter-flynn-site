@@ -30,7 +30,7 @@ const SINGLES = [
 ];
 
 const BIO =
-  'Hunter Flynn is a native to the Bluegrass state, born and raised in Pulaski County, Kentucky. Flynn\'s first public performance came in early 2022. Since then, the 28 year old singer/songwriter has gained national recognition as one of Appalachia\'s most promising young artists. In an area that has no shortage of talent, it is Flynn\'s soul-shattering vocal ability and veracious songwriting that makes him unique and leaves the listener with no doubt to whether or not he believes the songs he is singing. Flynn has now shared stages with the likes of Zach Top, Megan Moroney, Josh Meloy, and more. The sky is the limit for this young artist who refers to his style of music as "Appalachian Soul."';
+  'Hunter Flynn is a native to the Bluegrass state, born and raised in Pulaski County, Kentucky. He\'s a self-taught musician whose first public performance came in early 2022. Since then, the singer/songwriter has gained national recognition as one of Appalachia\'s most promising young artists. In an area that has no shortage of talent, it is Flynn\'s soul-shattering vocal ability and authentic songwriting that makes him unique and leaves the listener with no doubt to whether or not he believes the songs he is singing. Hunter has performed at major venues and festivals across the U.S. and Europe and was named 2025 Artist in Residence at the Kentucky Music Hall of Fame. The sky is the limit for this young artist who refers to his style of music as "Appalachian Soul."';
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);

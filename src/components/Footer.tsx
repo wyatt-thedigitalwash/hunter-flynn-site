@@ -89,7 +89,8 @@ export default function Footer() {
           Copyright &copy; 2026 Hunter Flynn Music - All Rights Reserved.
         </p>
         <p className="font-adobe text-xs text-white text-center mb-6">
-          &copy; Borchetta Entertainment Group, LLC d/b/a Big Machine Records
+          &copy; Appalachian Soul Music, LLC under exclusive license to Nashville
+          Harbor Records &amp; Entertainment, LLC.
         </p>
 
         {/* Footer links */}

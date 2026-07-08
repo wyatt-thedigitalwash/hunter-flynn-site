@@ -99,11 +99,11 @@ export default function BookingPage() {
                 615.981.0202
               </a>
               <a
-                href="mailto:bookhunterflynn@gmail.com"
-                aria-label="Email MJ at bookhunterflynn@gmail.com"
+                href="mailto:mj@mj247.com"
+                aria-label="Email MJ at mj@mj247.com"
                 className="font-adobe text-white/60 text-sm block hover:text-white transition-colors"
               >
-                bookhunterflynn@gmail.com
+                mj@mj247.com
               </a>
             </div>
           </div>
