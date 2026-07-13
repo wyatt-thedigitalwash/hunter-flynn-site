@@ -182,7 +182,7 @@ export default async function Home() {
       {/* Section 5: Bio */}
       <section
         aria-label="About Hunter Flynn"
-        className="relative py-32 px-6 bg-fixed bg-cover bg-center"
+        className="relative py-32 px-6 bg-scroll md:bg-fixed bg-cover bg-center"
         style={{ backgroundImage: "url('/backgrounds/HunterFlynn_Background_V2.jpg')" }}
       >
         <div className="absolute inset-0 bg-black/60" aria-hidden="true" />

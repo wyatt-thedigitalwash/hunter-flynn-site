@@ -60,7 +60,7 @@ export default function UpcomingShowsList({
             key={show.id}
             className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 py-6 border-b border-white/15 text-left"
           >
-            <div className="flex-shrink-0 sm:w-20 text-center sm:text-left">
+            <div className="flex-shrink-0 sm:w-20 text-left">
               <span className="font-din uppercase tracking-widest text-white text-sm block">
                 {month}
               </span>
