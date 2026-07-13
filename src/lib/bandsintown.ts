@@ -63,7 +63,13 @@ function mapEvent(event: BandsintownEvent): Show {
  */
 export async function getUpcomingShows(): Promise<Show[]> {
   const appId = process.env.BANDSINTOWN_APP_ID;
-  if (!appId) return [];
+  if (!appId) {
+    console.error(
+      "[bandsintown] BANDSINTOWN_APP_ID is not set. Returning no shows. " +
+        "Set it for the Production environment in Vercel and redeploy."
+    );
+    return [];
+  }
 
   const url = `https://rest.bandsintown.com/artists/${ARTIST_ID}/events?app_id=${encodeURIComponent(
     appId
@@ -76,16 +82,30 @@ export async function getUpcomingShows(): Promise<Show[]> {
       next: { revalidate: 3600 },
     });
 
-    if (!res.ok) return [];
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      console.error(
+        `[bandsintown] API responded ${res.status} ${res.statusText}. ` +
+          `Returning no shows. Body: ${body.slice(0, 200)}`
+      );
+      return [];
+    }
 
     const data: unknown = await res.json();
-    if (!Array.isArray(data)) return [];
+    if (!Array.isArray(data)) {
+      console.error(
+        "[bandsintown] Expected a JSON array of events but got: " +
+          JSON.stringify(data).slice(0, 200)
+      );
+      return [];
+    }
 
     return (data as BandsintownEvent[])
       .map(mapEvent)
       .filter((s) => s.datetime)
       .sort((a, b) => a.datetime.localeCompare(b.datetime));
-  } catch {
+  } catch (err) {
+    console.error("[bandsintown] Failed to fetch shows:", err);
     return [];
   }
 }
