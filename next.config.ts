@@ -68,6 +68,16 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // Canonical domain: www -> non-www (Vercel also handles this at the
+      // domain level once www.hunterflynn.com is added and hunterflynn.com
+      // is set as primary; this is a code-level guarantee)
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.hunterflynn.com' }],
+        destination: 'https://hunterflynn.com/:path*',
+        permanent: true,
+      },
+
       // Old site: /artwork -> /about
       { source: '/artwork', destination: '/about', permanent: true },
       { source: '/artwork/', destination: '/about', permanent: true },

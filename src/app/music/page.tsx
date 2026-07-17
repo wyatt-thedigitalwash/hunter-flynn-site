@@ -5,6 +5,12 @@ import Image from "next/image";
 
 const SINGLES = [
   {
+    title: "Dreams Keep Dying",
+    cover: "/covers/HunterFlynn_DreamKeepDying_Cover.jpg",
+    link: "https://hunterflynn.ffm.to/dreamskeepdying.OWE",
+    badge: "NEW RELEASE",
+  },
+  {
     title: "Robbing A Bank",
     cover: "/covers/HunterFlynn_RobbingABank_Cover.jpg",
     link: "https://hunterflynn.ffm.to/robbingabank",
@@ -97,7 +103,7 @@ export default function MusicPage() {
           <h2 className="font-din uppercase tracking-widest text-white text-xl mb-10 text-center">
             SINGLES
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {SINGLES.map((single) => (
               <article key={single.title} className="flex flex-col items-center">
                 <a
@@ -113,8 +119,13 @@ export default function MusicPage() {
                     fill
                     loading="lazy"
                     className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
+                  {"badge" in single && (
+                    <span className="absolute top-3 left-3 bg-black text-white font-din uppercase tracking-widest text-[10px] py-1.5 px-3">
+                      {single.badge}
+                    </span>
+                  )}
                 </a>
                 <a
                   href={single.link}

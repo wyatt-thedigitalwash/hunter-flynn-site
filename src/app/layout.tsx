@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ReleasePopup from "@/components/ReleasePopup";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hunterflynn.com"),
@@ -87,6 +88,7 @@ export default function RootLayout({
         <Header />
         <main id="main-content" className="flex-1">{children}</main>
         <Footer />
+        <ReleasePopup />
       </body>
     </html>
   );
