@@ -104,7 +104,7 @@ function CardFace({ card }: { card: VideoCard }) {
  */
 export default function VideoStack() {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -117,7 +117,11 @@ export default function VideoStack() {
 
   useEffect(() => {
     if (reducedMotion) return;
+    const steps = Math.max(CARDS.length - 1, 1);
     let raf = 0;
+    // Write transforms straight to the DOM instead of through React state.
+    // Re-rendering the whole tree (two <video> elements per card) on every
+    // scroll frame is what made this feel laggy; a direct style write does not.
     const onScroll = () => {
       if (raf) return;
       raf = requestAnimationFrame(() => {
@@ -127,7 +131,16 @@ export default function VideoStack() {
         const rect = el.getBoundingClientRect();
         const travel = rect.height - window.innerHeight;
         const scrolled = clamp(-rect.top, 0, travel);
-        setProgress(travel > 0 ? scrolled / travel : 0);
+        const progress = travel > 0 ? scrolled / travel : 0;
+        CARDS.forEach((_, i) => {
+          const node = cardRefs.current[i];
+          if (!node) return;
+          const p =
+            i === 0
+              ? 1
+              : smoothstep(0, 1, clamp(progress * steps - (i - 1), 0, 1));
+          node.style.transform = `translateY(${(1 - p) * 100}%)`;
+        });
       });
     };
     onScroll();
@@ -162,8 +175,6 @@ export default function VideoStack() {
     );
   }
 
-  const steps = Math.max(CARDS.length - 1, 1);
-
   return (
     <section aria-label="Featured music videos" className="bg-black" data-bg="dark">
       {/* Tall wrapper gives the pinned stack room to animate as we scroll. */}
@@ -171,31 +182,29 @@ export default function VideoStack() {
         {/*
           Clip at the viewport (not the card box) so each card slides up as its
           own full card over the one before -- not a wipe inside a single frame.
-          items-start + a capped top offset keeps the top spacing tight instead
-          of dead-centering the card (which left a big gap on tall screens).
+          items-center keeps the card vertically centered in the pinned viewport
+          so it does not park against the top edge with a gap below it.
         */}
-        <div className="sticky top-0 h-screen overflow-hidden flex items-start justify-center px-6 pt-[max(24px,8vh)]">
+        <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center px-6">
           <div className="relative w-[88vw] max-w-[1000px] aspect-[3/4] md:aspect-video">
-            {CARDS.map((card, i) => {
-              const p =
-                i === 0
-                  ? 1
-                  : smoothstep(0, 1, clamp(progress * steps - (i - 1), 0, 1));
-              return (
-                <div
-                  key={card.key}
-                  className="absolute inset-0 will-change-transform"
-                  style={{
-                    // Straight vertical slide -- no rotation, no skew.
-                    transform: `translateY(${(1 - p) * 100}%)`,
-                    // Later cards sit in front so they cover the ones before.
-                    zIndex: i,
-                  }}
-                >
-                  <CardFace card={card} />
-                </div>
-              );
-            })}
+            {CARDS.map((card, i) => (
+              <div
+                key={card.key}
+                ref={(node) => {
+                  cardRefs.current[i] = node;
+                }}
+                className="absolute inset-0 will-change-transform"
+                style={{
+                  // Card 0 starts settled; later cards start fully below and are
+                  // slid up by the scroll handler. Straight vertical slide only.
+                  transform: `translateY(${i === 0 ? 0 : 100}%)`,
+                  // Later cards sit in front so they cover the ones before.
+                  zIndex: i,
+                }}
+              >
+                <CardFace card={card} />
+              </div>
+            ))}
           </div>
         </div>
       </div>
