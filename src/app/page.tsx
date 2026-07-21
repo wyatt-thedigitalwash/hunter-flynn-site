@@ -2,20 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { getUpcomingShows } from "@/lib/bandsintown";
 import UpcomingShowsList from "@/components/UpcomingShowsList";
-import WatchVideoModal from "@/components/WatchVideoModal";
+import VideoStack from "@/components/VideoStack";
 
 // Revalidate the Bandsintown data at most once an hour.
 export const revalidate = 3600;
 
 const DESKTOP_HERO =
-  "https://res.cloudinary.com/dgbiatexy/video/upload/v1782782012/RobbingABank_Desktop_1_w4qjtl.mp4";
+  "https://res.cloudinary.com/dgbiatexy/video/upload/v1784644073/DreamsKeepDying_DesktopHero_ux2k2g.mp4";
 const MOBILE_HERO =
-  "https://res.cloudinary.com/dgbiatexy/video/upload/v1782762637/RobbingABank_MobileV2_fytcod.mp4";
-const FEATURED_LOOP =
-  "https://res.cloudinary.com/dgbiatexy/video/upload/v1782775383/RobbingABank_MusicVideo_ffzxhh.mp4";
-const FEATURED_LOOP_MOBILE =
-  "https://res.cloudinary.com/dgbiatexy/video/upload/v1782776407/RobbingABank_MobileV2_cierso.mp4";
-const STREAM_LINK = "https://hunterflynn.ffm.to/robbingabank";
+  "https://res.cloudinary.com/dgbiatexy/video/upload/v1784644073/DreamsKeepDying_MobileHero_ushody.mp4";
+const STREAM_LINK = "https://hunterflynn.ffm.to/dreamskeepdying.OWE";
 
 const SINGLES = [
   {
@@ -69,8 +65,8 @@ export default async function Home() {
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
           <h1 className="sr-only">Hunter Flynn -- Appalachian Soul</h1>
           <Image
-            src="/logos/HunterFlynn_LogoLocked_White.png"
-            alt="Hunter Flynn"
+            src="/logos/HunterFlynn_DreamsKeepDying_Lockup.png"
+            alt="Hunter Flynn -- Dreams Keep Dying"
             width={500}
             height={150}
             priority
@@ -80,7 +76,7 @@ export default async function Home() {
             href={STREAM_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Listen to Robbing A Bank (opens in new tab)"
+            aria-label="Listen to Dreams Keep Dying (opens in new tab)"
             className="mt-8 bg-white text-black font-din uppercase tracking-widest py-[14px] px-[40px] text-sm hover:bg-white/90 transition-colors"
           >
             LISTEN NOW
@@ -137,42 +133,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Section 3: Featured Video */}
-      <section aria-label="Featured music video" className="bg-black py-32 px-6" data-bg="dark">
-        <div className="mx-auto w-full md:w-3/4 max-w-[1100px]">
-          <div className="relative w-full aspect-[3/4] md:aspect-video">
-            <video
-              className="absolute inset-0 w-full h-full object-cover hidden md:block"
-              autoPlay
-              muted
-              loop
-              playsInline
-              aria-hidden="true"
-              src={FEATURED_LOOP}
-            />
-            <video
-              className="absolute inset-0 w-full h-full object-cover md:hidden"
-              autoPlay
-              muted
-              loop
-              playsInline
-              aria-hidden="true"
-              src={FEATURED_LOOP_MOBILE}
-            />
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-6">
-              <Image
-                src="/logos/RobbingABank_LogoWhite.png"
-                alt="Robbing A Bank"
-                width={400}
-                height={120}
-                loading="lazy"
-                className="w-[50%] max-w-[400px] h-auto"
-              />
-              <WatchVideoModal />
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Section 3: Featured Video Stack */}
+      <VideoStack />
 
       {/* Section 4: Shows */}
       <section aria-label="Upcoming shows" className="bg-black py-32 px-6" data-bg="dark">
