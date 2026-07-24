@@ -50,8 +50,13 @@ export async function subscribeToLaylo(data: SubscriberInput): Promise<LayloResu
   try {
     // Sequential (not parallel) to respect Laylo's prudent ~1 req/sec cap.
     const emailOk = await subscribeIdentifier(auth, { email: data.email });
-    const phoneOk = await subscribeIdentifier(auth, { phoneNumber: data.phoneE164 });
 
+    // No SMS-eligible phone (international fan or none): email is the only path.
+    if (!data.phoneE164) {
+      return emailOk ? { ok: true } : { ok: false, error: "email_failed" };
+    }
+
+    const phoneOk = await subscribeIdentifier(auth, { phoneNumber: data.phoneE164 });
     if (emailOk && phoneOk) return { ok: true };
     // The email is the durable identifier; a captured email is still a success.
     if (emailOk) return { ok: true, note: "phone_rejected" };

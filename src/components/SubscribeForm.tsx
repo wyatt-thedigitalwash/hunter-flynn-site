@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { COUNTRIES } from "@/lib/countries";
+import { SMS_COUNTRIES } from "@/lib/subscribe-validation";
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 type ErrorField = "email" | "phone" | "";
@@ -106,6 +107,10 @@ export default function SubscribeForm() {
         : "border-white focus:border-white/70"
     }`;
 
+  // US/Canada use the +1 auto-formatted, required field. Laylo can only text
+  // those numbers, so elsewhere phone is optional and plain.
+  const isNorthAmerica = SMS_COUNTRIES.has(country);
+
   return (
     <form
       className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
@@ -173,36 +178,53 @@ export default function SubscribeForm() {
       </div>
       <div>
         <label htmlFor="footer-phone" className="sr-only">Phone Number</label>
-        <div
-          className={`flex items-stretch bg-black border ${
-            errorField === "phone"
-              ? "border-red-500 focus-within:border-red-400"
-              : "border-white focus-within:border-white/70"
-          }`}
-        >
-          <span
-            className="flex items-center pl-3 pr-2 text-white/50 font-adobe text-sm select-none"
-            aria-hidden="true"
+        {isNorthAmerica ? (
+          <div
+            className={`flex items-stretch bg-black border ${
+              errorField === "phone"
+                ? "border-red-500 focus-within:border-red-400"
+                : "border-white focus-within:border-white/70"
+            }`}
           >
-            +1
-          </span>
+            <span
+              className="flex items-center pl-3 pr-2 text-white/50 font-adobe text-sm select-none"
+              aria-hidden="true"
+            >
+              +1
+            </span>
+            <input
+              ref={phoneRef}
+              id="footer-phone"
+              type="tel"
+              name="phone"
+              inputMode="numeric"
+              placeholder="555-555-5555"
+              required
+              aria-required="true"
+              aria-invalid={errorField === "phone"}
+              aria-describedby={errorField ? "footer-subscribe-error" : undefined}
+              autoComplete="tel"
+              value={phone}
+              onChange={(e) => setPhone(formatUsPhone(e.target.value))}
+              className="bg-black text-white py-3 pr-3 w-full font-adobe text-sm placeholder:text-white/50 outline-none border-0"
+            />
+          </div>
+        ) : (
           <input
             ref={phoneRef}
             id="footer-phone"
             type="tel"
             name="phone"
-            inputMode="numeric"
-            placeholder="555-555-5555"
-            required
-            aria-required="true"
+            inputMode="tel"
+            placeholder="Phone Number (optional)"
             aria-invalid={errorField === "phone"}
             aria-describedby={errorField ? "footer-subscribe-error" : undefined}
             autoComplete="tel"
             value={phone}
-            onChange={(e) => setPhone(formatUsPhone(e.target.value))}
-            className="bg-black text-white py-3 pr-3 w-full font-adobe text-sm placeholder:text-white/50 outline-none border-0"
+            onChange={(e) => setPhone(e.target.value)}
+            className={fieldClass("phone")}
           />
-        </div>
+        )}
       </div>
 
       <div>

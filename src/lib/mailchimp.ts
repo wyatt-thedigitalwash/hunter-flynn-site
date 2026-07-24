@@ -22,7 +22,7 @@ function buildMergeFields(data: SubscriberInput): Record<string, string> {
   const merge: Record<string, string> = { MMERGE9: ACQUISITION_CHANNEL };
   if (data.firstName) merge.FNAME = data.firstName;
   if (data.lastName) merge.LNAME = data.lastName;
-  if (data.phoneUsDisplay) merge.PHONE = data.phoneUsDisplay;
+  if (data.phoneDisplay) merge.PHONE = data.phoneDisplay;
   if (data.country) merge.MMERGE12 = data.country;
   if (data.zipCode) merge.MMERGE14 = data.zipCode;
   return merge;

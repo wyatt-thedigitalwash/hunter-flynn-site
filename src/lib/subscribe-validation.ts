@@ -8,12 +8,15 @@ const E164_REGEX = /^\+[1-9]\d{7,14}$/;
 // 0/1 exchange, and other malformed input.
 const NANP_REGEX = /^[2-9]\d{2}[2-9]\d{6}$/;
 
+// Countries Laylo can send SMS to and whose numbers use the +1 / NANP format.
+export const SMS_COUNTRIES = new Set(["United States", "Canada"]);
+
 export interface SubscriberInput {
   firstName: string;
   lastName: string;
   email: string;
-  phoneE164: string;
-  phoneUsDisplay: string;
+  phoneE164: string; // E.164 for Laylo SMS; "" when not SMS-eligible (intl or none)
+  phoneDisplay: string; // stored in Mailchimp's PHONE merge field; "" when none
   country: string;
   zipCode: string;
 }
@@ -68,25 +71,41 @@ export function toUsDisplay(e164: string): string {
   return e164;
 }
 
-// Validate + normalize the raw request body. Email and phone are the only
-// required fields; first/last/country/zip are optional.
+// Validate + normalize the raw request body. Email is always required. Phone is
+// required for US/Canada fans (Laylo can text them) and optional for everyone
+// else, since Laylo cannot send SMS internationally -- an international fan can
+// still join by email.
 export function validateSubscriber(body: Record<string, unknown>): ValidationResult {
   const email = sanitize(body.email, 254).toLowerCase();
   if (!email || !EMAIL_REGEX.test(email)) {
     return { ok: false, field: "email", message: "Please enter a valid email address." };
   }
 
+  const country = sanitize(body.country, 100);
   const rawPhone = sanitize(body.phone, 30);
-  if (!rawPhone) {
-    return { ok: false, field: "phone", message: "Please enter a valid phone number." };
-  }
-  const phoneE164 = normalizePhoneE164(rawPhone);
-  if (!phoneE164) {
-    return {
-      ok: false,
-      field: "phone",
-      message: "Please enter a valid phone number including area code.",
-    };
+
+  let phoneE164 = "";
+  let phoneDisplay = "";
+
+  if (SMS_COUNTRIES.has(country)) {
+    // US/Canada: phone required and must be a valid North American number.
+    if (!rawPhone) {
+      return { ok: false, field: "phone", message: "Please enter a valid phone number." };
+    }
+    const normalized = normalizePhoneE164(rawPhone);
+    if (!normalized) {
+      return {
+        ok: false,
+        field: "phone",
+        message: "Please enter a valid phone number including area code.",
+      };
+    }
+    phoneE164 = normalized;
+    phoneDisplay = toUsDisplay(normalized);
+  } else if (rawPhone && /\d/.test(rawPhone)) {
+    // International: phone optional, kept for Mailchimp only. phoneE164 stays ""
+    // so the Laylo SMS call is skipped (Laylo cannot text non-NANP numbers).
+    phoneDisplay = rawPhone;
   }
 
   return {
@@ -96,8 +115,8 @@ export function validateSubscriber(body: Record<string, unknown>): ValidationRes
       lastName: sanitize(body.lastName, 100),
       email,
       phoneE164,
-      phoneUsDisplay: toUsDisplay(phoneE164),
-      country: sanitize(body.country, 100),
+      phoneDisplay,
+      country,
       zipCode: sanitize(body.zipCode, 20),
     },
   };
