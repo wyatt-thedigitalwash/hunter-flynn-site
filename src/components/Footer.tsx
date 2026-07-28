@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import SubscribeForm from "@/components/SubscribeForm";
+import CookieChoicesLink from "@/components/legal/CookieChoicesLink";
 
 const SOCIALS = [
   {
@@ -42,10 +43,12 @@ const SOCIALS = [
 ];
 
 const FOOTER_LINKS = [
-  { label: "Terms", href: "https://www.bigmachinerecords.com/terms" },
-  { label: "Do Not Sell My Personal Information", href: "https://www.bigmachinerecords.com/privacy" },
-  { label: "Privacy", href: "https://www.bigmachinerecords.com/privacy" },
-  { label: "Cookie Choices", href: "https://www.bigmachinerecords.com/privacy" },
+  { label: "Terms", href: "/legal/terms" },
+  { label: "Privacy", href: "/legal/privacy" },
+  { label: "Copyright (DMCA)", href: "/legal/dmca" },
+  { label: "Cybersecurity", href: "/legal/cybersecurity" },
+  { label: "TCPA", href: "/legal/tcpa" },
+  { label: "Do Not Sell My Personal Information", href: "/legal/privacy#s10-2" },
 ];
 
 export default function Footer() {
@@ -98,16 +101,18 @@ export default function Footer() {
           {FOOTER_LINKS.map((link, i) => (
             <span key={link.label} className="flex items-center">
               {i > 0 && <span className="text-white/50 text-xs mx-2">|</span>}
-              <a
+              <Link
                 href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="font-adobe text-xs text-white hover:opacity-70 transition-opacity"
               >
                 {link.label}
-              </a>
+              </Link>
             </span>
           ))}
+          <span className="flex items-center">
+            <span className="text-white/50 text-xs mx-2">|</span>
+            <CookieChoicesLink className="font-adobe text-xs text-white hover:opacity-70 transition-opacity" />
+          </span>
         </div>
       </div>
     </footer>

@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CookieConsent from "@/components/consent/CookieConsent";
+import TermsGate from "@/components/consent/TermsGate";
+import AnchorScroll from "@/components/shared/AnchorScroll";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hunterflynn.com"),
@@ -84,9 +87,16 @@ export default function RootLayout({
         <a href="#main-content" className="skip-nav">
           Skip to main content
         </a>
+        <AnchorScroll />
         <Header />
         <main id="main-content" className="flex-1">{children}</main>
         <Footer />
+        {/* Cookie consent banner. Shows once per new visitor, persisted in
+            localStorage; injects nothing before consent is granted. */}
+        <CookieConsent />
+        {/* Arbitration / class-action notice, shown once right after the cookie
+            decision so it is never buried only in the footer. */}
+        <TermsGate />
       </body>
     </html>
   );
