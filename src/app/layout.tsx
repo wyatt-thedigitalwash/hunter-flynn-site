@@ -5,6 +5,12 @@ import Footer from "@/components/Footer";
 import CookieConsent from "@/components/consent/CookieConsent";
 import TermsGate from "@/components/consent/TermsGate";
 import AnchorScroll from "@/components/shared/AnchorScroll";
+import Splash from "@/components/Splash";
+
+// Keep in sync with SPLASH_KEY in src/components/Splash.tsx. Read before paint
+// so a visitor who already entered this session never sees the splash flash.
+const SPLASH_KEY = "hf_splash_younotme";
+const splashScript = `try{var e=document.documentElement;if(sessionStorage.getItem('${SPLASH_KEY}')){e.classList.add('splash-entered')}else if(location.pathname.indexOf('/legal')===0){e.classList.add('splash-exempt')}}catch(err){}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hunterflynn.com"),
@@ -73,8 +79,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
+    // suppressHydrationWarning: the splash script below mutates the class list
+    // before React hydrates, so server and client markup intentionally differ.
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: splashScript }} />
         <link rel="preconnect" href="https://use.typekit.net" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://p.typekit.net" crossOrigin="anonymous" />
         <link rel="stylesheet" href="https://use.typekit.net/vct8cdm.css" />
@@ -84,6 +93,9 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
+        {/* Splash must be the first child of <body> so it exists on first
+            paint. Shown once per browser session; never on /legal routes. */}
+        <Splash />
         <a href="#main-content" className="skip-nav">
           Skip to main content
         </a>

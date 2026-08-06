@@ -11,6 +11,7 @@ import {
   writeConsent,
 } from "./consent";
 import { applyConsent } from "./injectScripts";
+import { useSplashEntered } from "./useSplashEntered";
 
 const NON_NECESSARY: Category[] = ["analytics", "advertising", "functional", "social"];
 
@@ -20,15 +21,16 @@ function now() {
 }
 
 export default function CookieConsent() {
+  const splashEntered = useSplashEntered();
   const [decided, setDecided] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [draft, setDraft] = useState<Consent>(() => emptyConsent(false));
   const applied = useRef<Consent | null>(null);
 
-  // On mount: load any saved choice and inject the consented scripts. A
-  // first-time visitor (no saved choice) sees the banner right away -- this
-  // site has no splash gate to wait on.
+  // On mount: load any saved choice and inject the consented scripts. Scripts
+  // for a returning visitor are injected immediately regardless of the splash;
+  // only the banner UI waits for it (see the render guard below).
   useEffect(() => {
     const saved = readConsent();
     if (saved) {
@@ -104,8 +106,9 @@ export default function CookieConsent() {
 
   return (
     <>
-      {/* ── Consent banner (first visit) ── */}
-      {showBanner && !showModal && (
+      {/* ── Consent banner (first visit) ──
+          Held back until the splash is clear so the two never stack. */}
+      {showBanner && !showModal && splashEntered && (
         <div className="fixed inset-x-0 bottom-0 z-[60] p-4 sm:left-auto sm:right-4 sm:max-w-[420px]">
           <div className="border border-text-body/20 bg-background-alt/95 p-4 shadow-2xl backdrop-blur-sm sm:p-6">
             <p className="font-display text-[15px] text-text-accent sm:text-[18px]">We value your privacy</p>

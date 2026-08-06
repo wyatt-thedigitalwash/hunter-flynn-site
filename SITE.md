@@ -54,11 +54,45 @@ Logo links to /
   4. https://www.youtube.com/watch?v=fBKRUlsaKzM
   5. https://www.youtube.com/watch?v=l5Uwx8XXrqo
 
-## Single
-- Title: "Robbing A Bank"
-- Release date: June 26, 2026
-- Pre-save/stream link: https://hunterflynn.ffm.to/robbingabank
-- Cover art: public/covers/HunterFlynn_RobbingABank_Cover.jpg
+## Singles
+Newest first. Shown as a 2x2 grid on both / and /music.
+- "You, Not Me" — releases August 21, 2026. Pre-save: https://hunterflynn.ffm.to/younotme.OWE
+  Cover: public/covers/HunterFlynn_YouNotMe_cover.jpg (note the lowercase "cover" in the filename)
+- "Dreams Keep Dying" — https://hunterflynn.ffm.to/dreamskeepdying.OWE
+  Cover: public/covers/HunterFlynn_DreamKeepDying_Cover.jpg
+- "Robbing A Bank" — released June 26, 2026. https://hunterflynn.ffm.to/robbingabank
+  Cover: public/covers/HunterFlynn_RobbingABank_Cover.jpg
+- "Wasted Day" — https://hunterflynn.ffm.to/wastedday
+  Cover: public/covers/HunterFlynn_WastedDay_Cover.jpg
+
+## Splash / Pre-Home Overlay
+- Component: src/components/Splash.tsx, rendered as the first child of <body> in the root layout
+- Shows once per browser session, gating every route except /legal
+- Session key: hf_splash_younotme (sessionStorage). Bump the suffix when the
+  campaign changes and the splash re-shows to everyone automatically. The same key is
+  duplicated in src/app/layout.tsx for the pre-paint script, keep the two in sync
+- Two <html> classes: splash-entered (clicked through) and splash-exempt (deep-linked to
+  a legal page). Exempt visitors are NOT marked as entered, so reading the Terms is never
+  treated as agreeing to them
+- Layout is a single centered column: cover art, then title, then buttons
+- Backdrop concept "the drawing behind the drawing": the same charcoal cover enlarged,
+  blurred, and CSS-inverted, so the off-white paper drops to black and Hunter's graphite
+  reads back as light. Texture asset is public/backgrounds/HunterFlynn_YouNotMe_Texture.jpg,
+  a 900px downsample of the cover (114K) painted as a CSS background, not a next/image,
+  since it is decorative and scaled well past its own resolution. Still black and white only
+- When the campaign changes, re-crop the backdrop: background-size / background-position on
+  .splash-backdrop-art are framed to the specific artwork, and opacity depends on how dark
+  that drawing is (dark areas invert to bright ones)
+- Consent flow follows client-sites/UNIVERSAL-LEGAL-PROMPT.md Step 4, same as marfa-site:
+  - useSplashEntered() reports ONLY splash-entered, never splash-exempt. Entering is consent;
+    an exempt legal page is just a hidden overlay
+  - CookieConsent and the Case B TermsGate notice both wait on "entered", so a visitor
+    reading the Terms pre-entry is not stacked with prompts
+  - TermsGate Case A is the escape hatch: on /legal without having entered there is no
+    "Enter Site" button anywhere, so the notice shows one. It calls markSplashEntered()
+    and routes home. Always available, even after a past acknowledgement
+  - The splash carries the arbitration / class-action notice under its buttons, with
+    Terms, #section-17 and #class-action-waiver each linked separately
 
 ## Bio (Short — Home Page)
 Hunter Flynn is a native to the Bluegrass state, born and raised in Pulaski County, Kentucky. Flynn's first public performance came in early 2022. Since then, the 28 year old singer/songwriter has gained national recognition as one of Appalachia's most promising young artists. In an area that has no shortage of talent, it is Flynn's soul-shattering vocal ability and veracious songwriting that makes him unique and leaves the listener with no doubt to whether or not he believes the songs he is singing. Flynn has now shared stages with the likes of Zach Top, Megan Moroney, Josh Meloy, and more. The sky is the limit for this young artist who refers to his style of music as "Appalachian Soul."

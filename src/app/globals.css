@@ -113,6 +113,121 @@ section[data-bg="dark"] + section[data-bg="dark"] {
   color: #000000;
 }
 
+/* ─── Splash / Pre-Home Overlay ───
+   Full-screen title card shown once per browser session. The backdrop is flat
+   #000 per SITE.md (black and white only), so the charcoal cover art carries
+   the frame on its own. State lives as a class on <html>, set before paint by
+   the inline script in the root layout. */
+#splash-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #000000;
+  opacity: 1;
+  transition: opacity 800ms ease;
+}
+
+/* ── Backdrop: "the drawing behind the drawing" ──
+   The same charcoal cover, enlarged well past recognition and inverted, so the
+   off-white paper drops to black and Hunter's graphite reads back as light.
+   The result is his own hand rendered as white charcoal on black paper. */
+.splash-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.splash-backdrop-art {
+  position: absolute;
+  inset: 0;
+  background-image: url("/backgrounds/HunterFlynn_YouNotMe_Texture.jpg");
+  /* Framed on the two figures' heads: her shoulder falls left of the cover,
+     the helmet right of it. Re-crop this when the campaign artwork changes. */
+  background-size: 135%;
+  background-position: 50% 26%;
+  background-repeat: no-repeat;
+  /* The blur throws it out of focus so it reads as depth behind the crisp
+     cover instead of competing with it. */
+  filter: invert(1) grayscale(1) contrast(1.05) blur(3px);
+  /* Lower than it would need to be for a lighter drawing: this cover's black
+     dress and trousers invert to large bright areas. */
+  opacity: 0.26;
+}
+
+/* Paper tooth. Inline SVG noise so it costs no extra request; `overlay` lets
+   the grain sit in the midtones instead of fogging the blacks. */
+.splash-grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: 0.06;
+  /* `screen` on a near-black field: `overlay` would multiply back to black and
+     the grain would never show. */
+  mix-blend-mode: screen;
+}
+
+/* Pulls light into the middle so the cover and type stay clean while the
+   charcoal falls off into black at the edges. The linear pass on top darkens
+   the head and foot of the frame, where the eyebrow and the legal line sit. */
+.splash-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.35) 0%,
+      rgba(0, 0, 0, 0) 22%,
+      rgba(0, 0, 0, 0) 58%,
+      rgba(0, 0, 0, 0.6) 100%
+    ),
+    radial-gradient(
+      ellipse 75% 65% at 50% 44%,
+      rgba(0, 0, 0, 0.2) 0%,
+      rgba(0, 0, 0, 0.55) 55%,
+      rgba(0, 0, 0, 0.95) 100%
+    );
+}
+
+/* Sized against viewport height so the whole title card fits without scrolling
+   on a laptop, while still going large on a tall monitor and on mobile. */
+.splash-cover {
+  width: min(78vw, clamp(12rem, 48vh, 30rem));
+}
+#splash-overlay.is-exiting {
+  opacity: 0;
+  pointer-events: none;
+}
+html.splash-entered #splash-overlay,
+html.splash-exempt #splash-overlay {
+  display: none;
+}
+
+/* Lock scroll while the splash is up, but never on exempt (legal) routes. */
+html:not(.splash-entered):not(.splash-exempt) body {
+  overflow: hidden;
+}
+
+/* Staggered fade-up. Resting opacity comes from --rise-to so the subdued
+   elements (eyebrow, sub line, legal note) keep their dimmed weight -- a hard
+   opacity: 1 here would flatten the hierarchy. The easing is fast out with a
+   long soft settle. */
+@keyframes splash-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: var(--rise-to, 1);
+    transform: translateY(0);
+  }
+}
+.splash-rise {
+  opacity: 0;
+}
+.splash-ready .splash-rise {
+  animation: splash-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 /* Skip nav link */
 .skip-nav {
   position: absolute;

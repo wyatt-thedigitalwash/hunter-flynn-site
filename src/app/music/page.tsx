@@ -3,22 +3,36 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 
+// Every entry carries the same keys so the card markup stays uniform. An empty
+// badge renders nothing.
 const SINGLES = [
+  {
+    title: "You, Not Me",
+    cover: "/covers/HunterFlynn_YouNotMe_cover.jpg",
+    link: "https://hunterflynn.ffm.to/younotme.OWE",
+    badge: "OUT 8.21",
+    cta: "PRE-SAVE",
+  },
   {
     title: "Dreams Keep Dying",
     cover: "/covers/HunterFlynn_DreamKeepDying_Cover.jpg",
     link: "https://hunterflynn.ffm.to/dreamskeepdying.OWE",
-    badge: "NEW RELEASE",
+    badge: "",
+    cta: "LISTEN NOW",
   },
   {
     title: "Robbing A Bank",
     cover: "/covers/HunterFlynn_RobbingABank_Cover.jpg",
     link: "https://hunterflynn.ffm.to/robbingabank",
+    badge: "",
+    cta: "LISTEN NOW",
   },
   {
     title: "Wasted Day",
     cover: "/covers/HunterFlynn_WastedDay_Cover.jpg",
     link: "https://hunterflynn.ffm.to/wastedday",
+    badge: "",
+    cta: "LISTEN NOW",
   },
 ];
 
@@ -99,11 +113,11 @@ export default function MusicPage() {
 
       {/* Section 2: Singles */}
       <section aria-label="Singles" className="bg-black pb-20 px-6" data-bg="dark">
-        <div className="mx-auto w-full md:w-3/4 max-w-[1100px]">
+        <div className="mx-auto w-full max-w-[860px]">
           <h2 className="font-din uppercase tracking-widest text-white text-xl mb-10 text-center">
             SINGLES
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
             {SINGLES.map((single) => (
               <article key={single.title} className="flex flex-col items-center">
                 <a
@@ -119,9 +133,9 @@ export default function MusicPage() {
                     fill
                     loading="lazy"
                     className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    sizes="(max-width: 640px) 100vw, 410px"
                   />
-                  {"badge" in single && (
+                  {single.badge && (
                     <span className="absolute top-3 left-3 bg-black text-white font-din uppercase tracking-widest text-[10px] py-1.5 px-3">
                       {single.badge}
                     </span>
@@ -140,10 +154,10 @@ export default function MusicPage() {
                   href={single.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`Listen to ${single.title} now (opens in new tab)`}
+                  aria-label={`${single.cta}: ${single.title} (opens in new tab)`}
                   className="font-din uppercase tracking-widest text-white text-[11px] mt-2 text-center hover:underline transition-all"
                 >
-                  LISTEN NOW
+                  {single.cta}
                 </a>
               </article>
             ))}
