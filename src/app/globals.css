@@ -228,6 +228,20 @@ html:not(.splash-entered):not(.splash-exempt) body {
   animation: splash-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* ─── Shows: torn paper band ───
+   The tour visual with a sheet of paper torn along one edge: the paper sits
+   below the photo on mobile and beside it on desktop. The ragged edge comes
+   from an SVG turbulence/displacement filter (defs live on the Shows page)
+   applied to this empty fill layer only, so the dates stacked above it are
+   never distorted. The layer is deliberately extended past the band on its
+   three straight sides and clipped by the section, leaving one torn edge. */
+.tour-paper-fill {
+  /* Warm cream under the scanned sheet: the texture multiplies over this, so
+     the base runs lighter than the paper is meant to read. */
+  background-color: #FAF4E3;
+  filter: url(#tour-torn-edge) drop-shadow(0 0 12px rgba(0, 0, 0, 0.4));
+}
+
 /* Skip nav link */
 .skip-nav {
   position: absolute;

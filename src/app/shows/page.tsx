@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getUpcomingShows } from "@/lib/bandsintown";
 import UpcomingShowsList from "@/components/UpcomingShowsList";
+// Imported rather than referenced by path so Next generates a blur placeholder:
+// the page is all artwork now, so the section's black would otherwise flash
+// through until the full photo decodes.
+import tourVisual from "../../../public/backgrounds/HunterFlynn_TourVisual.jpg";
 
 // Revalidate the Bandsintown data at most once an hour.
 export const revalidate = 3600;
@@ -33,30 +38,124 @@ export default async function ShowsPage() {
 
   return (
     <>
-      {/* Page Header */}
-      <section aria-label="Page header" className="bg-black pt-36 pb-16 px-6" data-bg="dark">
-        <h1
-          className="font-din uppercase tracking-widest text-white text-center"
-          style={{ fontSize: "clamp(48px, 8vw, 80px)" }}
-        >
-          SHOWS
-        </h1>
-      </section>
+      {/* Tour visual + torn paper panel holding the dates: photo above the
+          paper on mobile, beside it from lg up. The section clips with
+          overflow-clip rather than overflow-hidden, which would turn it into a
+          scroll container and break the pinned backdrop. */}
+      <section
+        aria-label="Upcoming shows"
+        className="relative bg-black overflow-clip lg:min-h-screen"
+        data-bg="paper"
+      >
+        {/* Torn edge filter. Turbulence displaces the paper layer's alpha, so
+            the straight box edge tears into paper fiber. */}
+        <svg aria-hidden="true" focusable="false" className="absolute w-0 h-0">
+          <defs>
+            <filter id="tour-torn-edge" primitiveUnits="userSpaceOnUse">
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.011"
+                numOctaves="5"
+                seed="12"
+                result="noise"
+              />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="noise"
+                scale="42"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
+            </filter>
+          </defs>
+        </svg>
 
-      {/* Shows List */}
-      <section aria-label="Upcoming shows" className="bg-black pb-20 px-6" data-bg="dark">
-        <div className="max-w-3xl mx-auto flex flex-col items-center">
-          <UpcomingShowsList shows={shows} />
+        {/* Backdrop: the photo, plus the paper itself from lg up. Pinned to the
+            viewport on desktop so the whole composition holds still and only
+            the dates travel. On mobile it is just the photo, in flow. */}
+        <div className="relative lg:sticky lg:top-0 lg:h-screen">
+          {/* overflow-hidden so the zoom below is cropped to the column rather
+              than spilling under the paper. */}
+          <div className="relative overflow-hidden h-[52svh] min-h-[320px] max-h-[560px] lg:absolute lg:inset-y-0 lg:left-0 lg:w-[44%] lg:h-auto lg:min-h-0 lg:max-h-none">
+            <Image
+              src={tourVisual}
+              alt="Hunter Flynn mid-jump with his guitar in an open field at dusk"
+              fill
+              sizes="(max-width: 1024px) 100vw, 44vw"
+              // Hunter sits at roughly 56.5% / 59% of the frame, not the middle
+              // of it. On mobile the column is wide enough to crop, so
+              // object-position does the work. On desktop the column is almost
+              // exactly the photo's aspect, leaving nothing to crop, so the zoom
+              // supplies the slack and the translate spends it: -6.5% centres
+              // him horizontally, and the vertical value stops short of centring
+              // him on purpose, holding the frame low so more sky sits above.
+              className="object-cover object-[50%_64%] [transform:scale(1.1)] lg:object-center lg:[transform:scale(1.35)_translate(-6.5%,-2%)]"
+              placeholder="blur"
+              priority
+            />
+          </div>
 
-          <a
-            href="https://www.bandsintown.com/a/15543032-hunter-flynn"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="border border-white bg-transparent text-white font-din uppercase tracking-widest py-3 px-8 text-sm hover:bg-white/10 transition-colors"
+          {/* Desktop paper: torn down its left edge, straight edges pushed past
+              the section and clipped away. */}
+          <div
+            aria-hidden="true"
+            className="tour-paper-fill hidden lg:block overflow-hidden absolute -top-10 -bottom-10 left-[calc(44%-2.5rem)] -right-10"
           >
-            BANDSINTOWN
-            <span className="sr-only"> (opens in new tab)</span>
-          </a>
+            <Image
+              src="/backgrounds/Texturelabs_Paper_320XL.jpg"
+              alt=""
+              fill
+              sizes="60vw"
+              className="object-cover scale-125 mix-blend-multiply opacity-60"
+            />
+          </div>
+
+          {/* The nav sits directly on the artwork, so this carries it: white
+              type would otherwise land on pale sky and on the cream paper. */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black/45 via-black/15 to-transparent"
+          />
+
+          <h1
+            className="absolute top-24 lg:top-28 left-0 w-full lg:w-[44%] px-6 text-center font-din uppercase tracking-widest text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.45)]"
+            style={{ fontSize: "clamp(36px, 5vw, 64px)" }}
+          >
+            SHOWS
+          </h1>
+        </div>
+
+        {/* Dates. Pulled back over the backdrop on desktop; on mobile the paper
+            travels with them. */}
+        <div className="relative -mt-8 lg:mt-[-100vh] lg:ml-[44%]">
+          <div
+            aria-hidden="true"
+            className="tour-paper-fill lg:hidden overflow-hidden absolute top-0 -bottom-10 -left-10 -right-10"
+          >
+            <Image
+              src="/backgrounds/Texturelabs_Paper_320XL.jpg"
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover scale-125 mix-blend-multiply opacity-60"
+            />
+          </div>
+
+          <div className="relative px-6 pt-14 pb-16 sm:px-10 lg:px-14 lg:pt-28 lg:pb-24">
+            <div className="max-w-2xl mx-auto flex flex-col items-center">
+              <UpcomingShowsList shows={shows} variant="paper" />
+
+              <a
+                href="https://www.bandsintown.com/a/15543032-hunter-flynn"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-[#2E4A3B] bg-transparent text-[#2E4A3B] font-din uppercase tracking-widest py-3 px-8 text-sm hover:bg-[#2E4A3B]/10 transition-colors"
+              >
+                BANDSINTOWN
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     </>
