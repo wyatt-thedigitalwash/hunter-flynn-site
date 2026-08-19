@@ -96,10 +96,11 @@ export default async function ShowsPage() {
           </div>
 
           {/* Desktop paper: torn down its left edge, straight edges pushed past
-              the section and clipped away. */}
+              the section and clipped away. Filtered as one piece, scan
+              included, which this sheet is small enough to allow. */}
           <div
             aria-hidden="true"
-            className="tour-paper-fill hidden lg:block overflow-hidden absolute -top-10 -bottom-10 left-[calc(44%-2.5rem)] -right-10"
+            className="tour-paper-sheet hidden lg:block overflow-hidden absolute -top-10 -bottom-10 left-[calc(44%-2.5rem)] -right-10"
           >
             <Image
               src="/backgrounds/Texturelabs_Paper_320XL.jpg"
@@ -128,17 +129,26 @@ export default async function ShowsPage() {
         {/* Dates. Pulled back over the backdrop on desktop; on mobile the paper
             travels with them. */}
         <div className="relative -mt-8 lg:mt-[-100vh] lg:ml-[44%]">
+          {/* Mobile paper: torn along its top edge. This sheet runs the length
+              of the date list, far too tall to filter, so the tear is split off
+              into its own strip and the sheet is left unfiltered. See the note
+              on .tour-paper-fill in globals.css. The strip is torn and shadowed
+              on both long edges, so the sheet is painted over its inner half to
+              leave one tear and one shadow. */}
           <div
             aria-hidden="true"
-            className="tour-paper-fill lg:hidden overflow-hidden absolute top-0 -bottom-10 -left-10 -right-10"
+            className="lg:hidden absolute top-0 -bottom-10 -left-10 -right-10"
           >
-            <Image
-              src="/backgrounds/Texturelabs_Paper_320XL.jpg"
-              alt=""
-              fill
-              sizes="100vw"
-              className="object-cover scale-125 mix-blend-multiply opacity-60"
-            />
+            <div className="tour-paper-torn absolute inset-x-0 top-0 h-20" />
+            <div className="tour-paper-fill isolate overflow-hidden absolute inset-x-0 top-8 bottom-0">
+              <Image
+                src="/backgrounds/Texturelabs_Paper_320XL.jpg"
+                alt=""
+                fill
+                sizes="100vw"
+                className="object-cover scale-125 mix-blend-multiply opacity-60"
+              />
+            </div>
           </div>
 
           <div className="relative px-6 pt-14 pb-16 sm:px-10 lg:px-14 lg:pt-28 lg:pb-24">

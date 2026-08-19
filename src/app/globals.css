@@ -230,15 +230,40 @@ html:not(.splash-entered):not(.splash-exempt) body {
 
 /* ─── Shows: torn paper band ───
    The tour visual with a sheet of paper torn along one edge: the paper sits
-   below the photo on mobile and beside it on desktop. The ragged edge comes
-   from an SVG turbulence/displacement filter (defs live on the Shows page)
-   applied to this empty fill layer only, so the dates stacked above it are
-   never distorted. The layer is deliberately extended past the band on its
-   three straight sides and clipped by the section, leaving one torn edge. */
-.tour-paper-fill {
+   below the photo on mobile and beside it on desktop. Both layers carry no
+   content of their own, so the dates stacked above them are never distorted.
+   Each is deliberately extended past the band on its straight sides and
+   clipped by the section, leaving one torn edge.
+
+   Beside the photo the sheet is filtered whole, scan and all. Displacing the
+   two together is what makes the tear read as paper fibre: filter only part of
+   a sheet and its smeared texture ends up next to crisp texture, which shows
+   as a streaked band along the tear. */
+.tour-paper-sheet {
   /* Warm cream under the scanned sheet: the texture multiplies over this, so
      the base runs lighter than the paper is meant to read. */
   background-color: #FAF4E3;
+  filter: url(#tour-torn-edge) drop-shadow(0 0 12px rgba(0, 0, 0, 0.4));
+}
+
+/* Below the photo the same treatment cannot be used. That sheet runs the
+   height of the whole date list, several thousand pixels once the tour fills
+   out, and WebKit gives up on a filtered element once its filter region grows
+   past its backing-store limit, then paints nothing at all: that is how the
+   entire mobile sheet vanished on iOS while rendering fine in desktop Chrome.
+   So the filter is confined to a strip along the torn edge and the sheet
+   itself goes unfiltered, where the worst a filter failure can cost is the
+   raggedness of one edge. */
+.tour-paper-fill {
+  background-color: #FAF4E3;
+}
+
+/* The strip carries flat colour rather than the scan, since a displaced scan
+   would smear against the sheet's. #F0E8D5 is what the cream measures once the
+   scan has multiplied over it, and on a sheet this tall the scan is stretched
+   close to flat anyway, so the join has little to give away. */
+.tour-paper-torn {
+  background-color: #F0E8D5;
   filter: url(#tour-torn-edge) drop-shadow(0 0 12px rgba(0, 0, 0, 0.4));
 }
 
