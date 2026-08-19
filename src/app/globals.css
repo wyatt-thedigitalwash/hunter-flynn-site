@@ -246,25 +246,41 @@ html:not(.splash-entered):not(.splash-exempt) body {
   filter: url(#tour-torn-edge) drop-shadow(0 0 12px rgba(0, 0, 0, 0.4));
 }
 
-/* Below the photo the same treatment cannot be used. That sheet runs the
-   height of the whole date list, several thousand pixels once the tour fills
-   out, and WebKit gives up on a filtered element once its filter region grows
-   past its backing-store limit, then paints nothing at all: that is how the
-   entire mobile sheet vanished on iOS while rendering fine in desktop Chrome.
-   So the filter is confined to a strip along the torn edge and the sheet
-   itself goes unfiltered, where the worst a filter failure can cost is the
-   raggedness of one edge. */
+/* Below the photo the same treatment cannot be used on the whole sheet. That
+   sheet runs the height of the whole date list, several thousand pixels once
+   the tour fills out, and WebKit gives up on a filtered element once its
+   filter region grows past its backing-store limit, then paints nothing at
+   all: that is how the entire mobile sheet vanished on iOS while rendering
+   fine in desktop Chrome. It also stretches the scan to cover that height,
+   which blows the fibre up into soft blurred blotches rather than paper.
+   So the sheet below carries the cream alone and nothing else. */
 .tour-paper-fill {
   background-color: #FAF4E3;
 }
 
-/* The strip carries flat colour rather than the scan, since a displaced scan
-   would smear against the sheet's. #F0E8D5 is what the cream measures once the
-   scan has multiplied over it, and on a sheet this tall the scan is stretched
-   close to flat anyway, so the join has little to give away. */
-.tour-paper-torn {
-  background-color: #F0E8D5;
+/* The tear itself is a sheet of its own, only tall enough to stay well inside
+   WebKit's limit, and it carries the scan at a size close to what the desktop
+   sheet shows. Filtering the cream and the scan together is what makes the
+   tear read as paper fibre rather than a cut line.
+
+   Nothing may mask this element. A mask is applied after the filter and clips
+   to the border box, which throws away everything the filter put outside it:
+   the half of the tear that displaces upward, and the drop shadow the paper
+   casts on the photo. What is left is a shallow nicked line with no depth. */
+.tour-paper-head {
+  background-color: #FAF4E3;
   filter: url(#tour-torn-edge) drop-shadow(0 0 12px rgba(0, 0, 0, 0.4));
+}
+
+/* So the head is ended by fading the plain sheet in on top of it instead. It
+   carries no filter, so its own mask has nothing outside the border box to
+   throw away. It reaches full cream well above the head's lower edge, which
+   buries that edge and its shadow, and since both sheets are the same cream
+   the scan simply runs out with nothing to mark the join. */
+.tour-paper-fade {
+  background-color: #FAF4E3;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 160px);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 160px);
 }
 
 /* Skip nav link */

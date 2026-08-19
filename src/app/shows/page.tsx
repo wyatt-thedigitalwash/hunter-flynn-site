@@ -129,26 +129,34 @@ export default async function ShowsPage() {
         {/* Dates. Pulled back over the backdrop on desktop; on mobile the paper
             travels with them. */}
         <div className="relative -mt-8 lg:mt-[-100vh] lg:ml-[44%]">
-          {/* Mobile paper: torn along its top edge. This sheet runs the length
-              of the date list, far too tall to filter, so the tear is split off
-              into its own strip and the sheet is left unfiltered. See the note
-              on .tour-paper-fill in globals.css. The strip is torn and shadowed
-              on both long edges, so the sheet is painted over its inner half to
-              leave one tear and one shadow. */}
+          {/* Mobile paper: torn along its top edge. The sheet runs the length
+              of the date list, far too tall to filter or to stretch the scan
+              over, so the torn head is split off into a sheet of its own that
+              carries the scan and the filter, and the run below it is left as
+              plain cream. The cream is then faded in over the head to end it,
+              which is the one way round that leaves the tear intact. See the
+              note on .tour-paper-head in globals.css.
+
+              The straight cream edge at top-8 sits under the head the whole
+              way across, since the tear never reaches that far down. It is
+              there for the case where the filter fails outright: the sheet
+              still shows, and the cost is a straight edge rather than a torn
+              one. */}
           <div
             aria-hidden="true"
             className="lg:hidden absolute top-0 -bottom-10 -left-10 -right-10"
           >
-            <div className="tour-paper-torn absolute inset-x-0 top-0 h-20" />
-            <div className="tour-paper-fill isolate overflow-hidden absolute inset-x-0 top-8 bottom-0">
+            <div className="tour-paper-fill absolute inset-x-0 top-8 bottom-0" />
+            <div className="tour-paper-head absolute inset-x-0 top-0 h-[560px] overflow-hidden">
               <Image
                 src="/backgrounds/Texturelabs_Paper_320XL.jpg"
                 alt=""
                 fill
                 sizes="100vw"
-                className="object-cover scale-125 mix-blend-multiply opacity-60"
+                className="object-cover scale-150 mix-blend-multiply opacity-60"
               />
             </div>
+            <div className="tour-paper-fade absolute inset-x-0 top-[300px] bottom-0" />
           </div>
 
           <div className="relative px-6 pt-14 pb-16 sm:px-10 lg:px-14 lg:pt-28 lg:pb-24">
