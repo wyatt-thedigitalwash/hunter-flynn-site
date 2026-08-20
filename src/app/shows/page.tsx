@@ -128,38 +128,50 @@ export default async function ShowsPage() {
 
         {/* Dates. Pulled back over the backdrop on desktop; on mobile the paper
             travels with them. */}
-        <div className="relative -mt-8 lg:mt-[-100vh] lg:ml-[44%]">
+        {/* -mt-14 pulls the paper 56px up over the photo: the tear tile's
+            deepest valley is 48px down, so grass always shows behind the whole
+            torn edge. pt-20 below gives the extra 24px back so the dates keep
+            their distance from the photo. */}
+        <div className="relative -mt-14 lg:mt-[-100vh] lg:ml-[44%]">
           {/* Mobile paper: torn along its top edge. The sheet runs the length
               of the date list, far too tall to filter or to stretch the scan
               over, so the torn head is split off into a sheet of its own that
-              carries the scan and the filter, and the run below it is left as
-              plain cream. The cream is then faded in over the head to end it,
-              which is the one way round that leaves the tear intact. See the
-              note on .tour-paper-head in globals.css.
+              carries the scan, and the run below it is left as plain cream.
+              The cream is then faded in over the head to end it. See the note
+              on .tour-paper-head in globals.css.
 
-              The straight cream edge at top-8 sits under the head the whole
-              way across, since the tear never reaches that far down. It is
-              there for the case where the filter fails outright: the sheet
+              Unlike the desktop sheet, the head's tear is NOT made by the
+              turbulence filter: iOS Safari rasterises that filter coarsely and
+              the tear came out as big smooth lobes on phones. The head is
+              masked with a pre-baked tear tile instead, and the drop shadow
+              sits on the wrapper around it so it follows the masked edge.
+
+              The straight cream edge at top-14 sits under the head the whole
+              way across: the tear bottoms out at 48px, so the head is solid
+              again by 56px and the fill never pokes through the torn edge. It
+              is there for the case where the mask fails outright: the sheet
               still shows, and the cost is a straight edge rather than a torn
               one. */}
           <div
             aria-hidden="true"
             className="lg:hidden absolute top-0 -bottom-10 -left-10 -right-10"
           >
-            <div className="tour-paper-fill absolute inset-x-0 top-8 bottom-0" />
-            <div className="tour-paper-head absolute inset-x-0 top-0 h-[560px] overflow-hidden">
-              <Image
-                src="/backgrounds/Texturelabs_Paper_320XL.jpg"
-                alt=""
-                fill
-                sizes="100vw"
-                className="object-cover scale-150 mix-blend-multiply opacity-60"
-              />
+            <div className="tour-paper-fill absolute inset-x-0 top-14 bottom-0" />
+            <div className="tour-paper-tear-shadow absolute inset-x-0 top-0 h-[560px]">
+              <div className="tour-paper-head absolute inset-0 overflow-hidden">
+                <Image
+                  src="/backgrounds/Texturelabs_Paper_320XL.jpg"
+                  alt=""
+                  fill
+                  sizes="100vw"
+                  className="object-cover scale-150 mix-blend-multiply opacity-60"
+                />
+              </div>
             </div>
             <div className="tour-paper-fade absolute inset-x-0 top-[300px] bottom-0" />
           </div>
 
-          <div className="relative px-6 pt-14 pb-16 sm:px-10 lg:px-14 lg:pt-28 lg:pb-24">
+          <div className="relative px-6 pt-20 pb-16 sm:px-10 lg:px-14 lg:pt-28 lg:pb-24">
             <div className="max-w-2xl mx-auto flex flex-col items-center">
               <UpcomingShowsList shows={shows} variant="paper" />
 
