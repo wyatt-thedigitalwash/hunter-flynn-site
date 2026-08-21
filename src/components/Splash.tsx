@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 // Versioned so a new campaign re-shows the splash to everyone automatically.
 // Bump the suffix when the release changes. sessionStorage, not localStorage:
 // it should come back on a new session, not be dismissed forever.
-const SPLASH_KEY = "hf_splash_younotme";
+const SPLASH_KEY = "hf_splash_younotme_out";
 const STREAM_LINK = "https://hunterflynn.ffm.to/younotme.OWE";
 const COVER_SRC = "/covers/HunterFlynn_YouNotMe_cover.jpg";
 
@@ -91,7 +91,7 @@ export default function Splash() {
             href={STREAM_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="You, Not Me cover art, pre-save (opens in new tab)"
+            aria-label="You, Not Me cover art, listen now (opens in new tab)"
             className="splash-rise splash-cover relative aspect-square shrink-0 overflow-hidden hover:opacity-90 transition-opacity"
             style={{ animationDelay: "0ms" }}
           >
@@ -125,7 +125,7 @@ export default function Splash() {
                 } as React.CSSProperties
               }
             >
-              New single August 21
+              New single out now
             </span>
 
             <p
@@ -150,7 +150,7 @@ export default function Splash() {
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto text-center bg-white text-black font-din uppercase tracking-[0.2em] text-xs px-10 py-4 hover:opacity-80 transition-opacity"
               >
-                Pre-Save
+                Listen Now
                 <span className="sr-only"> (opens in new tab)</span>
               </a>
               <button

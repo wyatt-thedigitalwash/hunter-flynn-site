@@ -9,7 +9,7 @@ import Splash from "@/components/Splash";
 
 // Keep in sync with SPLASH_KEY in src/components/Splash.tsx. Read before paint
 // so a visitor who already entered this session never sees the splash flash.
-const SPLASH_KEY = "hf_splash_younotme";
+const SPLASH_KEY = "hf_splash_younotme_out";
 const splashScript = `try{var e=document.documentElement;if(sessionStorage.getItem('${SPLASH_KEY}')){e.classList.add('splash-entered')}else if(location.pathname.indexOf('/legal')===0){e.classList.add('splash-exempt')}}catch(err){}`;
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | Hunter Flynn",
   },
   description:
-    "Official website of Hunter Flynn, singer/songwriter from Pulaski County, Kentucky. New single Robbing A Bank available now.",
+    "Official website of Hunter Flynn, singer/songwriter from Pulaski County, Kentucky. New single You, Not Me available now.",
   alternates: { canonical: "https://hunterflynn.com" },
   robots: { index: true, follow: true },
   icons: {
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Hunter Flynn | Appalachian Soul",
     description:
-      "Official website of Hunter Flynn, singer/songwriter from Pulaski County, Kentucky. New single Robbing A Bank available now.",
+      "Official website of Hunter Flynn, singer/songwriter from Pulaski County, Kentucky. New single You, Not Me available now.",
     url: "https://hunterflynn.com",
     siteName: "Hunter Flynn",
     images: [
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Hunter Flynn | Appalachian Soul",
     description:
-      "Official website of Hunter Flynn, singer/songwriter from Pulaski County, Kentucky. New single Robbing A Bank available now.",
+      "Official website of Hunter Flynn, singer/songwriter from Pulaski County, Kentucky. New single You, Not Me available now.",
     images: ["/og-image.png"],
   },
   other: {

@@ -20,8 +20,8 @@ const SINGLES = [
     title: "You, Not Me",
     cover: "/covers/HunterFlynn_YouNotMe_cover.jpg",
     link: "https://hunterflynn.ffm.to/younotme.OWE",
-    badge: "OUT 8.21",
-    cta: "PRE-SAVE",
+    badge: "",
+    cta: "LISTEN NOW",
   },
   {
     title: "Dreams Keep Dying",

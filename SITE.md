@@ -56,7 +56,7 @@ Logo links to /
 
 ## Singles
 Newest first. Shown as a 2x2 grid on both / and /music.
-- "You, Not Me" — releases August 21, 2026. Pre-save: https://hunterflynn.ffm.to/younotme.OWE
+- "You, Not Me" — released August 21, 2026. https://hunterflynn.ffm.to/younotme.OWE
   Cover: public/covers/HunterFlynn_YouNotMe_cover.jpg (note the lowercase "cover" in the filename)
 - "Dreams Keep Dying" — https://hunterflynn.ffm.to/dreamskeepdying.OWE
   Cover: public/covers/HunterFlynn_DreamKeepDying_Cover.jpg
@@ -68,9 +68,10 @@ Newest first. Shown as a 2x2 grid on both / and /music.
 ## Splash / Pre-Home Overlay
 - Component: src/components/Splash.tsx, rendered as the first child of <body> in the root layout
 - Shows once per browser session, gating every route except /legal
-- Session key: hf_splash_younotme (sessionStorage). Bump the suffix when the
+- Session key: hf_splash_younotme_out (sessionStorage). Bump the suffix when the
   campaign changes and the splash re-shows to everyone automatically. The same key is
-  duplicated in src/app/layout.tsx for the pre-paint script, keep the two in sync
+  duplicated in src/app/layout.tsx for the pre-paint script and in
+  src/components/consent/useSplashEntered.ts, keep all three in sync
 - Two <html> classes: splash-entered (clicked through) and splash-exempt (deep-linked to
   a legal page). Exempt visitors are NOT marked as entered, so reading the Terms is never
   treated as agreeing to them
