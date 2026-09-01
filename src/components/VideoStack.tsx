@@ -18,6 +18,17 @@ type VideoCard = {
 // straight up from below and settles in front of the one before it.
 const CARDS: VideoCard[] = [
   {
+    key: "you-not-me",
+    titleSrc: "/logos/HunterFlynn_YouNotMe_Title.png",
+    titleAlt: "You, Not Me",
+    desktopSrc:
+      "https://res.cloudinary.com/dgbiatexy/video/upload/v1788301104/YouNotMe_Desktop_bwk3j6.mp4",
+    mobileSrc:
+      "https://res.cloudinary.com/dgbiatexy/video/upload/v1788301106/YouNotMe_Mobile_qvqslx.mp4",
+    videoId: "Oe4Jo1zbUso",
+    videoTitle: "You, Not Me",
+  },
+  {
     key: "dreams-keep-dying",
     titleSrc: "/logos/HunterFlynn_DreamsKeepDying_Title.png",
     titleAlt: "Dreams Keep Dying",
@@ -42,6 +53,12 @@ const CARDS: VideoCard[] = [
     videoTitle: "Robbing A Bank",
   },
 ];
+
+// Height (px) of the sliver each waiting card shows right below the current
+// card, so the viewer can see how many videos are in the stack. The stack's
+// clip box extends (CARDS.length - 1) * PEEK past the card so the slivers are
+// flush against it and each one is exactly PEEK tall.
+const PEEK = 36;
 
 function clamp(v: number, min: number, max: number) {
   return Math.min(Math.max(v, min), max);
@@ -132,14 +149,21 @@ export default function VideoStack() {
         const travel = rect.height - window.innerHeight;
         const scrolled = clamp(-rect.top, 0, travel);
         const progress = travel > 0 ? scrolled / travel : 0;
+        const progresses = CARDS.map((_, i) =>
+          i === 0
+            ? 1
+            : smoothstep(0, 1, clamp(progress * steps - (i - 1), 0, 1))
+        );
         CARDS.forEach((_, i) => {
           const node = cardRefs.current[i];
           if (!node) return;
-          const p =
-            i === 0
-              ? 1
-              : smoothstep(0, 1, clamp(progress * steps - (i - 1), 0, 1));
-          node.style.transform = `translateY(${(1 - p) * 100}%)`;
+          // Later cards render in front, so without an offset a deeper waiting
+          // card would exactly cover the one before it. Push each waiting card
+          // down by PEEK per not-yet-arrived card ahead of it; the clip box
+          // then trims each sliver to the same PEEK height.
+          let stagger = 0;
+          for (let j = 1; j < i; j++) stagger += (1 - progresses[j]) * PEEK;
+          node.style.transform = `translateY(calc(${(1 - progresses[i]) * 100}% + ${stagger}px))`;
         });
       });
     };
@@ -177,8 +201,9 @@ export default function VideoStack() {
 
   return (
     <section aria-label="Featured music videos" className="bg-black" data-bg="dark">
-      {/* Tall wrapper gives the pinned stack room to animate as we scroll. */}
-      <div ref={wrapRef} className="relative h-[220vh]">
+      {/* Tall wrapper gives the pinned stack room to animate as we scroll:
+          100vh pinned + 120vh of travel per card transition. */}
+      <div ref={wrapRef} className="relative h-[340vh]">
         {/*
           Clip at the viewport (not the card box) so each card slides up as its
           own full card over the one before -- not a wipe inside a single frame.
@@ -186,18 +211,28 @@ export default function VideoStack() {
           so it does not park against the top edge with a gap below it.
         */}
         <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center px-6">
-          <div className="relative w-[88vw] max-w-[1000px] aspect-[3/4] md:aspect-video">
+          <div
+            className="relative w-[88vw] max-w-[1000px] overflow-hidden"
+            style={{ paddingBottom: (CARDS.length - 1) * PEEK }}
+          >
+            {/* Invisible spacer sets the card height; the padding above adds
+                room for the waiting cards' slivers below it. */}
+            <div className="aspect-[3/4] md:aspect-video" aria-hidden="true" />
             {CARDS.map((card, i) => (
               <div
                 key={card.key}
                 ref={(node) => {
                   cardRefs.current[i] = node;
                 }}
-                className="absolute inset-0 will-change-transform"
+                className="absolute inset-x-0 top-0 aspect-[3/4] md:aspect-video will-change-transform"
                 style={{
-                  // Card 0 starts settled; later cards start fully below and are
-                  // slid up by the scroll handler. Straight vertical slide only.
-                  transform: `translateY(${i === 0 ? 0 : 100}%)`,
+                  // Card 0 starts settled; later cards start below, staggered
+                  // by PEEK so each shows an equal sliver inside the clip box.
+                  // The scroll handler slides them up from there.
+                  transform:
+                    i === 0
+                      ? "translateY(0)"
+                      : `translateY(calc(100% + ${(i - 1) * PEEK}px))`,
                   // Later cards sit in front so they cover the ones before.
                   zIndex: i,
                 }}

@@ -37,6 +37,8 @@ const SINGLES = [
 ];
 
 const VIDEOS = [
+  { id: "Oe4Jo1zbUso", title: "You, Not Me" },
+  { id: "dJ82kaAA-wE", title: "Dreams Keep Dying" },
   { id: "Qr6gisD81Yg", title: "Robbing A Bank" },
   { id: "L09msLEDVNs", title: "Video 2" },
   { id: "Tvd7PgeglDg", title: "Video 3" },

@@ -8,10 +8,10 @@ import VideoStack from "@/components/VideoStack";
 export const revalidate = 3600;
 
 const DESKTOP_HERO =
-  "https://res.cloudinary.com/dgbiatexy/video/upload/v1784644073/DreamsKeepDying_DesktopHero_ux2k2g.mp4";
+  "https://res.cloudinary.com/dgbiatexy/video/upload/v1788301105/YouNotMe_HeroDesktop_z8tbzd.mp4";
 const MOBILE_HERO =
-  "https://res.cloudinary.com/dgbiatexy/video/upload/v1784644073/DreamsKeepDying_MobileHero_ushody.mp4";
-const STREAM_LINK = "https://hunterflynn.ffm.to/dreamskeepdying.OWE";
+  "https://res.cloudinary.com/dgbiatexy/video/upload/v1788301103/YouNotMe_HeroMobile_itqtym.mp4";
+const STREAM_LINK = "https://hunterflynn.ffm.to/younotme.OWE";
 
 // Every entry carries the same keys so the card markup stays uniform. An empty
 // badge renders nothing.
@@ -79,18 +79,18 @@ export default async function Home() {
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
           <h1 className="sr-only">Hunter Flynn -- Appalachian Soul</h1>
           <Image
-            src="/logos/HunterFlynn_DreamsKeepDying_Lockup.png"
-            alt="Hunter Flynn -- Dreams Keep Dying"
+            src="/logos/HunterFlynn_YouNotMe_Lockup_v3.png"
+            alt="Hunter Flynn -- You, Not Me"
             width={500}
-            height={150}
+            height={139}
             priority
-            className="w-[60vw] max-w-[500px] h-auto"
+            className="w-[70vw] max-w-[500px] h-auto"
           />
           <a
             href={STREAM_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Listen to Dreams Keep Dying (opens in new tab)"
+            aria-label="Listen to You, Not Me (opens in new tab)"
             className="mt-8 bg-white text-black font-din uppercase tracking-widest py-[14px] px-[40px] text-sm hover:bg-white/90 transition-colors"
           >
             LISTEN NOW
