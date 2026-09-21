@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getUpcomingShows } from "@/lib/bandsintown";
 import UpcomingShowsList from "@/components/UpcomingShowsList";
 import VideoStack from "@/components/VideoStack";
+import AlbumFeature from "@/components/AlbumFeature";
 
 // Revalidate the Bandsintown data at most once an hour.
 export const revalidate = 3600;
@@ -98,9 +99,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Section 2: Singles */}
+      {/* Section 2: New album */}
+      <AlbumFeature />
+
+      {/* Section 3: Singles */}
       <section aria-label="Latest singles" className="bg-black py-32 px-6" data-bg="dark">
-        <div className="mx-auto w-full max-w-[860px] grid grid-cols-1 sm:grid-cols-2 gap-10">
+        <div className="mx-auto w-full max-w-[1000px] grid grid-cols-1 sm:grid-cols-2 gap-10">
           {SINGLES.map((single) => (
             <article key={single.title} className="flex flex-col items-center">
               <a
@@ -116,7 +120,7 @@ export default async function Home() {
                   fill
                   loading="lazy"
                   className="object-cover"
-                  sizes="(max-width: 640px) 100vw, 410px"
+                  sizes="(max-width: 640px) 100vw, 480px"
                 />
                 {single.badge && (
                   <span className="absolute top-3 left-3 bg-black text-white font-din uppercase tracking-widest text-[10px] py-1.5 px-3">
@@ -147,10 +151,10 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Section 3: Featured Video Stack */}
+      {/* Section 4: Featured Video Stack */}
       <VideoStack />
 
-      {/* Section 4: Shows */}
+      {/* Section 5: Shows */}
       <section aria-label="Upcoming shows" className="bg-black py-32 px-6" data-bg="dark">
         <div className="max-w-3xl mx-auto flex flex-col items-center text-center">
           <h2 className="font-din uppercase tracking-widest text-white text-2xl mb-8">
@@ -166,7 +170,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Section 5: Bio */}
+      {/* Section 6: Bio */}
       <section
         aria-label="About Hunter Flynn"
         className="relative py-32 px-6 bg-scroll md:bg-fixed bg-cover bg-center"

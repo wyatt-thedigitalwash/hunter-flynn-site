@@ -16,6 +16,14 @@
 - Headlines: DIN Engschrift LT Pro Regular
 - Body: Adobe Clean Regular (self-hosted from public/fonts/AdobeClean-Regular.otf)
 - Adobe Fonts embed: https://use.typekit.net/vct8cdm.css
+- "Roots" release fonts (label spec, Adobe Fonts kit https://use.typekit.net/nra2cor.css, loaded
+  alongside the main kit): DIN Condensed VF Demi Bold for headlines, DIN Condensed VF Regular for
+  sub-heads, DIN Condensed Light for body. Tailwind classes: font-din-cond (+ font-semibold for
+  Demi Bold) and font-din-cond-light. Used only on Roots release elements: the splash and
+  src/components/AlbumFeature.tsx
+- "Roots" release palette (label spec): Dark Green #1A2016 (PMS 5535 C) background, Tan #F1E4CB
+  (PMS 7506 C) copy. Tailwind: bg-roots-green / text-roots-tan. SPLASH ONLY. Client call: the
+  Roots sections inside the site (AlbumFeature) stay on black with white type
 - Headline font must always be used at minimum 30% larger than body copy per label spec
 - All headlines uppercase
 - No em dashes anywhere in copy
@@ -54,6 +62,19 @@ Logo links to /
   4. https://www.youtube.com/watch?v=fBKRUlsaKzM
   5. https://www.youtube.com/watch?v=l5Uwx8XXrqo
 
+## Album: Roots
+- Releases October 30, 2026. Pre-save / stream link: https://hunterflynn.ffm.to/roots.OWE
+- Cover: public/covers/HunterFlynn_ALBUMRoots_Cover.jpg
+- All campaign config lives in src/lib/release.ts (link, cover, release date, copy)
+- Highlighted in three places: the splash, below the home hero, and below the /music header.
+  The last two are the shared src/components/AlbumFeature.tsx (cover left, type right, stacked
+  on mobile, mirroring the label's release graphic)
+- Copy flips on its own at midnight Eastern on October 30: "Out October 30" / "Pre-Save Now"
+  becomes "Out now" / "Listen Now". isRootsOut() is only ever called in server components and
+  passed down as a prop (the splash takes `released`), and the root layout sets
+  revalidate = 3600 so every route re-renders within the hour. No deploy needed on release day
+- The home hero is still the "You, Not Me" video and lockup
+
 ## Singles
 Newest first. Shown as a 2x2 grid on both / and /music.
 - "You, Not Me" — released August 21, 2026. https://hunterflynn.ffm.to/younotme.OWE
@@ -68,22 +89,22 @@ Newest first. Shown as a 2x2 grid on both / and /music.
 ## Splash / Pre-Home Overlay
 - Component: src/components/Splash.tsx, rendered as the first child of <body> in the root layout
 - Shows once per browser session, gating every route except /legal
-- Session key: hf_splash_younotme_out (sessionStorage). Bump the suffix when the
+- Session key: hf_splash_roots_presave (sessionStorage). Bump the suffix when the
   campaign changes and the splash re-shows to everyone automatically. The same key is
   duplicated in src/app/layout.tsx for the pre-paint script and in
   src/components/consent/useSplashEntered.ts, keep all three in sync
 - Two <html> classes: splash-entered (clicked through) and splash-exempt (deep-linked to
   a legal page). Exempt visitors are NOT marked as entered, so reading the Terms is never
   treated as agreeing to them
-- Layout is a single centered column: cover art, then title, then buttons
-- Backdrop concept "the drawing behind the drawing": the same charcoal cover enlarged,
-  blurred, and CSS-inverted, so the off-white paper drops to black and Hunter's graphite
-  reads back as light. Texture asset is public/backgrounds/HunterFlynn_YouNotMe_Texture.jpg,
-  a 900px downsample of the cover (114K) painted as a CSS background, not a next/image,
-  since it is decorative and scaled well past its own resolution. Still black and white only
-- When the campaign changes, re-crop the backdrop: background-size / background-position on
-  .splash-backdrop-art are framed to the specific artwork, and opacity depends on how dark
-  that drawing is (dark areas invert to bright ones)
+- Layout follows the label's release graphic. From md (768px) up: cover on the left, and on
+  the right, centered, the "HUNTER FLYNN / ROOTS" lockup (Demi Bold, title 1.35x the artist
+  line), then "NEW ALBUM OUT OCTOBER 30", then the buttons, then the legal notice. Below md it
+  is one centered column in the same order, cover first. Cover and lockup sizes are set in
+  globals.css (.splash-cover, .splash-title) against both vw and vh so the card never scrolls
+  on a laptop
+- Flat Dark Green field with Tan type and tan buttons (filled primary, outlined "Enter Site").
+  No backdrop art. The earlier "You, Not Me" splash used an inverted charcoal texture backdrop
+  (public/backgrounds/HunterFlynn_YouNotMe_Texture.jpg, still in the repo, now unused)
 - Consent flow follows client-sites/UNIVERSAL-LEGAL-PROMPT.md Step 4, same as marfa-site:
   - useSplashEntered() reports ONLY splash-entered, never splash-exempt. Entering is consent;
     an exempt legal page is just a hidden overlay

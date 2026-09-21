@@ -6,10 +6,15 @@ import CookieConsent from "@/components/consent/CookieConsent";
 import TermsGate from "@/components/consent/TermsGate";
 import AnchorScroll from "@/components/shared/AnchorScroll";
 import Splash from "@/components/Splash";
+import { isRootsOut } from "@/lib/release";
+
+// Re-render every route at most hourly so the pre-save copy flips to "out now"
+// on release day without a deploy. See src/lib/release.ts.
+export const revalidate = 3600;
 
 // Keep in sync with SPLASH_KEY in src/components/Splash.tsx. Read before paint
 // so a visitor who already entered this session never sees the splash flash.
-const SPLASH_KEY = "hf_splash_younotme_out";
+const SPLASH_KEY = "hf_splash_roots_presave";
 const splashScript = `try{var e=document.documentElement;if(sessionStorage.getItem('${SPLASH_KEY}')){e.classList.add('splash-entered')}else if(location.pathname.indexOf('/legal')===0){e.classList.add('splash-exempt')}}catch(err){}`;
 
 export const metadata: Metadata = {
@@ -19,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s | Hunter Flynn",
   },
   description:
-    "Official website of Hunter Flynn, singer/songwriter from Pulaski County, Kentucky. New single You, Not Me available now.",
+    "Official website of Hunter Flynn, singer/songwriter from Pulaski County, Kentucky. New album Roots out October 30.",
   alternates: { canonical: "https://hunterflynn.com" },
   robots: { index: true, follow: true },
   icons: {
@@ -30,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Hunter Flynn | Appalachian Soul",
     description:
-      "Official website of Hunter Flynn, singer/songwriter from Pulaski County, Kentucky. New single You, Not Me available now.",
+      "Official website of Hunter Flynn, singer/songwriter from Pulaski County, Kentucky. New album Roots out October 30.",
     url: "https://hunterflynn.com",
     siteName: "Hunter Flynn",
     images: [
@@ -47,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Hunter Flynn | Appalachian Soul",
     description:
-      "Official website of Hunter Flynn, singer/songwriter from Pulaski County, Kentucky. New single You, Not Me available now.",
+      "Official website of Hunter Flynn, singer/songwriter from Pulaski County, Kentucky. New album Roots out October 30.",
     images: ["/og-image.png"],
   },
   other: {
@@ -87,6 +92,8 @@ export default function RootLayout({
         <link rel="preconnect" href="https://use.typekit.net" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://p.typekit.net" crossOrigin="anonymous" />
         <link rel="stylesheet" href="https://use.typekit.net/vct8cdm.css" />
+        {/* DIN Condensed, the label's font spec for the "Roots" release. */}
+        <link rel="stylesheet" href="https://use.typekit.net/nra2cor.css" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -95,7 +102,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         {/* Splash must be the first child of <body> so it exists on first
             paint. Shown once per browser session; never on /legal routes. */}
-        <Splash />
+        <Splash released={isRootsOut()} />
         <a href="#main-content" className="skip-nav">
           Skip to main content
         </a>
