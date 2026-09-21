@@ -22,9 +22,9 @@ const CARDS: VideoCard[] = [
     titleSrc: "/logos/HunterFlynn_YouNotMe_Title.png",
     titleAlt: "You, Not Me",
     desktopSrc:
-      "https://res.cloudinary.com/dgbiatexy/video/upload/v1788301104/YouNotMe_Desktop_bwk3j6.mp4",
+      "https://media.thedigitalwash.com/hunter-flynn/YouNotMe_Desktop_bwk3j6.mp4",
     mobileSrc:
-      "https://res.cloudinary.com/dgbiatexy/video/upload/v1788301106/YouNotMe_Mobile_qvqslx.mp4",
+      "https://media.thedigitalwash.com/hunter-flynn/YouNotMe_Mobile_qvqslx.mp4",
     videoId: "Oe4Jo1zbUso",
     videoTitle: "You, Not Me",
   },
@@ -33,9 +33,9 @@ const CARDS: VideoCard[] = [
     titleSrc: "/logos/HunterFlynn_DreamsKeepDying_Title.png",
     titleAlt: "Dreams Keep Dying",
     desktopSrc:
-      "https://res.cloudinary.com/dgbiatexy/video/upload/v1784644679/DreamsKeepDying_Desktop_vdb0ub.mp4",
+      "https://media.thedigitalwash.com/hunter-flynn/DreamsKeepDying_Desktop_vdb0ub%20(1).mp4",
     mobileSrc:
-      "https://res.cloudinary.com/dgbiatexy/video/upload/v1784644681/DreamsKeepDying_Mobile_be6bqh.mp4",
+      "https://media.thedigitalwash.com/hunter-flynn/DreamsKeepDying_Mobile_be6bqh%20(1).mp4",
     videoId: "dJ82kaAA-wE",
     videoTitle: "Dreams Keep Dying",
   },
@@ -44,11 +44,11 @@ const CARDS: VideoCard[] = [
     titleSrc: "/logos/RobbingABank_LogoWhite.png",
     titleAlt: "Robbing A Bank",
     desktopSrc:
-      "https://res.cloudinary.com/dgbiatexy/video/upload/v1782775383/RobbingABank_MusicVideo_ffzxhh.mp4",
-    // Mobile-specific cut was removed; reuse the Cloudinary video and let
+      "https://media.thedigitalwash.com/hunter-flynn/RobbingABank_MusicVideo_ffzxhh%20(2).mp4",
+    // Mobile-specific cut was removed; reuse the desktop video and let
     // object-cover center-crop it to the mobile card, same as the others.
     mobileSrc:
-      "https://res.cloudinary.com/dgbiatexy/video/upload/v1782775383/RobbingABank_MusicVideo_ffzxhh.mp4",
+      "https://media.thedigitalwash.com/hunter-flynn/RobbingABank_MusicVideo_ffzxhh%20(2).mp4",
     videoId: "Qr6gisD81Yg",
     videoTitle: "Robbing A Bank",
   },

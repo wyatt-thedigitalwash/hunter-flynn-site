@@ -9,9 +9,9 @@ import AlbumFeature from "@/components/AlbumFeature";
 export const revalidate = 3600;
 
 const DESKTOP_HERO =
-  "https://res.cloudinary.com/dgbiatexy/video/upload/v1788301105/YouNotMe_HeroDesktop_z8tbzd.mp4";
+  "https://media.thedigitalwash.com/hunter-flynn/YouNotMe_HeroDesktop_z8tbzd.mp4";
 const MOBILE_HERO =
-  "https://res.cloudinary.com/dgbiatexy/video/upload/v1788301103/YouNotMe_HeroMobile_itqtym.mp4";
+  "https://media.thedigitalwash.com/hunter-flynn/YouNotMe_HeroMobile_itqtym.mp4";
 const STREAM_LINK = "https://hunterflynn.ffm.to/younotme.OWE";
 
 // Every entry carries the same keys so the card markup stays uniform. An empty
