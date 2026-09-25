@@ -50,6 +50,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: "@HunterFlynn_",
+    creator: "@HunterFlynn_",
     title: "Hunter Flynn | Appalachian Soul",
     description:
       "Official website of Hunter Flynn, singer/songwriter from Pulaski County, Kentucky. New album Roots out October 30.",
@@ -72,6 +74,7 @@ const jsonLd = {
     "https://www.facebook.com/HunterFlynnMusic",
     "https://www.instagram.com/h_nterflynn",
     "https://www.tiktok.com/@hunter_flynn",
+    "https://x.com/HunterFlynn_",
     "https://www.youtube.com/@hunterflynn",
     "https://www.bandsintown.com/a/15543032-hunter-flynn",
   ],
