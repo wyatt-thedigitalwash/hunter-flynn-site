@@ -9,10 +9,10 @@ import AlbumFeature from "@/components/AlbumFeature";
 export const revalidate = 3600;
 
 const DESKTOP_HERO =
-  "https://media.thedigitalwash.com/hunter-flynn/YouNotMe_HeroDesktop_z8tbzd.mp4";
+  "https://media.thedigitalwash.com/hunter-flynn/HunterFlynn_SecondGuesses_DesktopHero.m4v";
 const MOBILE_HERO =
-  "https://media.thedigitalwash.com/hunter-flynn/YouNotMe_HeroMobile_itqtym.mp4";
-const STREAM_LINK = "https://hunterflynn.ffm.to/younotme.OWE";
+  "https://media.thedigitalwash.com/hunter-flynn/HunterFlynn_SecondGuesses_MobileHero.m4v";
+const STREAM_LINK = "https://hunterflynn.ffm.to/secondguessing.OWE";
 
 // Every entry carries the same keys so the card markup stays uniform. An empty
 // badge renders nothing.
@@ -79,19 +79,25 @@ export default async function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40" aria-hidden="true" />
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
           <h1 className="sr-only">Hunter Flynn -- Appalachian Soul</h1>
+          {/* Lockup: the single title set in type over the name logo, same
+              proportions as the earlier "You, Not Me" artwork. The negative
+              right margin cancels the trailing letter-spacing so it centers. */}
+          <p className="font-din-cond font-normal uppercase text-white whitespace-nowrap text-[clamp(1.75rem,8vw,4.5rem)] leading-none tracking-[0.3em] mr-[-0.3em]">
+            Second Guessing
+          </p>
           <Image
-            src="/logos/HunterFlynn_YouNotMe_Lockup_v3.png"
-            alt="Hunter Flynn -- You, Not Me"
-            width={500}
-            height={139}
+            src="/logos/HunterFlynn_YouNotMe_Name.png"
+            alt="Hunter Flynn"
+            width={2216}
+            height={887}
             priority
-            className="w-[70vw] max-w-[500px] h-auto"
+            className="mt-6 md:mt-8 w-[36vw] max-w-[220px] h-auto"
           />
           <a
             href={STREAM_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Listen to You, Not Me (opens in new tab)"
+            aria-label="Listen to Second Guessing (opens in new tab)"
             className="mt-8 bg-white text-black font-din uppercase tracking-widest py-[14px] px-[40px] text-sm hover:bg-white/90 transition-colors"
           >
             LISTEN NOW

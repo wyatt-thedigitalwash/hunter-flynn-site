@@ -6,6 +6,7 @@ import Image from "next/image";
 // Client half of /music: the video grid and its modal player. The rest of
 // the page is static and lives in the server page at src/app/music/page.tsx.
 const VIDEOS = [
+  { id: "0Xb1ZRstpSw", title: "Second Guessing" },
   { id: "Oe4Jo1zbUso", title: "You, Not Me" },
   { id: "dJ82kaAA-wE", title: "Dreams Keep Dying" },
   { id: "Qr6gisD81Yg", title: "Robbing A Bank" },

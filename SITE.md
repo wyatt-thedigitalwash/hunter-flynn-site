@@ -55,6 +55,8 @@ Logo links to /
 - Desktop hero: https://res.cloudinary.com/dgbiatexy/video/upload/v1782762637/RobbingABank_DesktopV2_lcmdl9.mp4
 - Mobile hero: https://res.cloudinary.com/dgbiatexy/video/upload/v1782762637/RobbingABank_MobileV2_fytcod.mp4
 - Music video: https://res.cloudinary.com/dgbiatexy/video/upload/v1782775383/RobbingABank_MusicVideo_ffzxhh.mp4
+- "Second Guessing" official video: https://www.youtube.com/watch?v=0Xb1ZRstpSw. First card in the
+  home VideoStack (title set in type, no PNG yet) and the featured video on /music
 - YouTube videos (in order):
   1. https://www.youtube.com/watch?v=Qr6gisD81Yg (featured on home)
   2. https://www.youtube.com/watch?v=L09msLEDVNs
@@ -73,7 +75,9 @@ Logo links to /
   becomes "Out now" / "Listen Now". isRootsOut() is only ever called in server components and
   passed down as a prop (the splash takes `released`), and the root layout sets
   revalidate = 3600 so every route re-renders within the hour. No deploy needed on release day
-- The home hero is still the "You, Not Me" video and lockup
+- The home hero is the "Second Guessing" single: videos HunterFlynn_SecondGuesses_{Desktop,Mobile}Hero.m4v
+  on media.thedigitalwash.com, "SECOND GUESSING" set in DIN Condensed VF Regular (400) over
+  public/logos/HunterFlynn_YouNotMe_Name.png, Listen Now -> https://hunterflynn.ffm.to/secondguessing.OWE
 
 ## Singles
 Newest first. Shown as a 2x2 grid on both / and /music.

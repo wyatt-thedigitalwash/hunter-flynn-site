@@ -6,7 +6,8 @@ import WatchVideoModal from "./WatchVideoModal";
 
 type VideoCard = {
   key: string;
-  titleSrc: string;
+  // Title artwork, or null to set titleAlt in type when there is no PNG.
+  titleSrc: string | null;
   titleAlt: string;
   desktopSrc: string;
   mobileSrc: string;
@@ -17,6 +18,18 @@ type VideoCard = {
 // Order matters: the first card is shown first. Each following card slides
 // straight up from below and settles in front of the one before it.
 const CARDS: VideoCard[] = [
+  {
+    key: "second-guessing",
+    titleSrc: null,
+    titleAlt: "Second Guessing",
+    desktopSrc:
+      "https://media.thedigitalwash.com/hunter-flynn/HunterFlynn_SecondGuesses_DesktopVideos.m4v",
+    // No mobile cut; object-cover center-crops the desktop video to the card.
+    mobileSrc:
+      "https://media.thedigitalwash.com/hunter-flynn/HunterFlynn_SecondGuesses_DesktopVideos.m4v",
+    videoId: "0Xb1ZRstpSw",
+    videoTitle: "Second Guessing",
+  },
   {
     key: "you-not-me",
     titleSrc: "/logos/HunterFlynn_YouNotMe_Title.png",
@@ -97,14 +110,21 @@ function CardFace({ card }: { card: VideoCard }) {
         aria-hidden="true"
       />
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 px-6">
-        <Image
-          src={card.titleSrc}
-          alt={card.titleAlt}
-          width={400}
-          height={120}
-          loading="lazy"
-          className="w-[55%] max-w-[400px] h-auto"
-        />
+        {card.titleSrc ? (
+          <Image
+            src={card.titleSrc}
+            alt={card.titleAlt}
+            width={400}
+            height={120}
+            loading="lazy"
+            className="w-[55%] max-w-[400px] h-auto"
+          />
+        ) : (
+          // Negative right margin cancels the trailing letter-spacing.
+          <p className="font-din-cond font-normal uppercase text-white text-center leading-none text-[clamp(1.5rem,5vw,3.25rem)] tracking-[0.3em] mr-[-0.3em]">
+            {card.titleAlt}
+          </p>
+        )}
         <WatchVideoModal videoId={card.videoId} title={card.videoTitle} />
       </div>
     </div>
@@ -203,7 +223,11 @@ export default function VideoStack() {
     <section aria-label="Featured music videos" className="bg-black" data-bg="dark">
       {/* Tall wrapper gives the pinned stack room to animate as we scroll:
           100vh pinned + 120vh of travel per card transition. */}
-      <div ref={wrapRef} className="relative h-[340vh]">
+      <div
+        ref={wrapRef}
+        className="relative"
+        style={{ height: `${100 + (CARDS.length - 1) * 120}vh` }}
+      >
         {/*
           Clip at the viewport (not the card box) so each card slides up as its
           own full card over the one before -- not a wipe inside a single frame.
