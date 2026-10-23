@@ -7,8 +7,8 @@ import UpcomingShowsList from "@/components/UpcomingShowsList";
 // through until the full photo decodes.
 import tourVisual from "../../../public/backgrounds/HunterFlynn_TourVisual.jpg";
 
-// Revalidate the Bandsintown data at most once an hour.
-export const revalidate = 3600;
+// Render on every request so Bandsintown changes show up immediately.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Shows",

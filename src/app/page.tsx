@@ -5,8 +5,8 @@ import UpcomingShowsList from "@/components/UpcomingShowsList";
 import VideoStack from "@/components/VideoStack";
 import AlbumFeature from "@/components/AlbumFeature";
 
-// Revalidate the Bandsintown data at most once an hour.
-export const revalidate = 3600;
+// Render on every request so Bandsintown changes show up immediately.
+export const dynamic = "force-dynamic";
 
 const DESKTOP_HERO =
   "https://media.thedigitalwash.com/hunter-flynn/HunterFlynn_SecondGuesses_DesktopHero.m4v";

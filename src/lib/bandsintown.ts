@@ -78,8 +78,8 @@ export async function getUpcomingShows(): Promise<Show[]> {
   try {
     const res = await fetch(url, {
       headers: { Accept: "application/json" },
-      // Refresh at most once an hour (ISR / fetch cache).
-      next: { revalidate: 3600 },
+      // Always fetch fresh so added or removed shows appear immediately.
+      cache: "no-store",
     });
 
     if (!res.ok) {
